@@ -9,13 +9,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'backbone-master/test/vendor/jquery.js',
-        'backbone-master/test/vendor/json2.js',
-        'backbone-master/test/vendor/underscore.js',
-        'backbone-master/backbone.js',
+        'backbone/test/vendor/jquery.js',
+        'backbone/test/vendor/json2.js',
+        'backbone/test/vendor/underscore.js',
+        'backbone/backbone.js',
         'index.es5.js',
-        'backbone-master/test/setup/*.js',
-        'backbone-master/test/*.js'
+        'backbone/test/setup/*.js',
+        'backbone/test/*.js'
     ],
 
     // test results reporter to use
