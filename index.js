@@ -179,6 +179,9 @@ const BurhanModel = Backbone.Model.extend({
 
                     attributes[relation] = currentValue;
                 }
+            } else if (typeof value === 'object' && currentValue !== undefined && typeof currentValue.set === 'function') {
+                currentValue.set(value);
+                attributes[relation] = currentValue;
             }
         });
 

@@ -6,29 +6,80 @@ The idea is simple: you can define relations like you define defaults. A relatio
 
 # Defining relations
 
-There are several ways to define relations:
+You can define relations using the `relations` attribute. It can either be a hash or a function that returns a hash. There are a few different ways to define relations:
 
+## Simple `{name: constructor}`
+
+The simpelest form without any options. Example:
 
 ```
 var MAuthor = Model.extend({
-    // Defaults to true. If true, relations are also created when defaults are created.
-    createRelations: true,
-    defaults: {
-        id: null,
-        name: ''
-    },
     relations: {
         // This is a simple relation where MUser is a Model.
         user: MUser,
 
         // Here we define an attribute which should be a collection.
         channels: CChannel,
-
-        // Similar to above, just another syntax. This is to support more complex relations.
-        contacts: {module: CContact}
     }
 })
 ```
+
+## Complex `{name: options}`
+
+With this form you can add a bit more config options. These are the options at the moment:
+
+| key | description|
+| constructor | The constructor for the relation. This can either be a `Backbone.Model` or a `Backbone.Collection`.
+
+Example:
+
+```
+var MAuthor = Model.extend({
+    relations: {
+        // Similar to channels, just another syntax. This is to support more complex configuration options.
+        contacts: {constructor: CContact}
+    }
+})
+```
+
+
+# Setting related model data
+
+## Scalar
+
+If a relation is set, you cannot set it to another value. If you try to set a related model to a scalar (`integer`, `string`, null, undefined), then the id of that model will be set:
+
+```
+mAuthor.set('user', null);  // -> mAuther.get('user').get('id') = null
+mAuthor.set('user', 1);     // -> mAuther.get('user').get('id') = 1
+mAuthor.set('user', 'foo'); // -> mAuther.get('user').get('id') = 'foo'
+```
+
+## Hash
+
+If however you give a hash, these will be passed to the relation `set` method. The following two lines have identical behavior:
+
+```
+mAuthor.set('user', {id: 1, name: 'foo'});
+mAuthor.get('user').set({id: 1, name: 'foo'});
+```
+
+## Backbone.Model
+
+If a model is passed in, that model's attributes will be copied using `toJSON` and is actually no different from giving a hash. So, it will not replace the existing model with the given model:
+
+```
+mSomeModel = new Backbone.Model({id: 1, name: 'foo'});
+mAuthor.set('user', mSomeModel);
+mAuthor.get('user') === mSomeModel // -> false
+```
+
+
+# Setting related collection data
+
+TODO
+
+# Old
 
 Every instance of MAuthor now has instances of MUser, CChannel and CContact. You can use it as follows:
 
@@ -96,20 +147,4 @@ var cChannel = new CChannel([{id: 1}, {id: 2}, {id: 3}];
 mAuthor.set('channels', cChannel);
 mAuthor.get('channels').toJSON(cChannel);       // [{id: 1}, {id: 2}, {id: 3}]
 mAuthor.get('channels') === cChannel;           // false
-```
-
-# Setting related data
-If a relation is set, you cannot set it to another value. This means that the following all have no effect:
-
-```
-mAuthor.set('user', null);
-mAuthor.set('user', 1);
-mAuthor.set('user', 'foo');
-```
-
-If however you give a hash, these will be passed to the relation `set` method. The following two lines have identical behavior:
-
-```
-mAuthor.set('user', {id: 1, name: 'foo'});
-mAuthor.get('user').set({id: 1, name: 'foo'});
 ```
