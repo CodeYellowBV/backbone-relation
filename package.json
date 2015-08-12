@@ -14,8 +14,9 @@
     "eslint": "1.1.0"
   },
   "scripts": {
+    "pretest": "npm run -s build-js && npm run -s lint-js",
     "test": "echo 'Running backbone tests...'; ./backbone/node_modules/.bin/karma start",
-    "lint": "eslint index.js",
-    "build": "npm run -s lint && babel index.js -o index.es5.js && npm run -s test"
+    "lint-js": "eslint index.js",
+    "build-js": "babel index.js -o index.es5.js"
   }
 }

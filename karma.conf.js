@@ -15,7 +15,8 @@ module.exports = function(config) {
         'backbone/backbone.js',
         'index.es5.js',
         'backbone/test/setup/*.js',
-        'backbone/test/*.js'
+        'backbone/test/*.js',
+        'test/*.js'
     ],
 
     // test results reporter to use
