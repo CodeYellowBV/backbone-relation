@@ -43,108 +43,87 @@ var MAuthor = Model.extend({
 ```
 
 
-# Setting related model data
+# Setting related data
 
-## Scalar
-
-If a relation is set, you cannot set it to another value. If you try to set a related model to a scalar (`integer`, `string`, null, undefined), then the id of that model will be set:
+The most basic form of setting a related data is getting it first:
 
 ```
-mAuthor.set('user', null);  // -> mAuther.get('user').get('id') = null
-mAuthor.set('user', 1);     // -> mAuther.get('user').get('id') = 1
-mAuthor.set('user', 'foo'); // -> mAuther.get('user').get('id') = 'foo'
+mAuthor.get('user').set('id', 17);
+mAuthor.get('contacts').set([{id: 1}, {id: 2}]);
 ```
 
-## Hash
-
-If however you give a hash, these will be passed to the relation `set` method. The following two lines have identical behavior:
+Another way of setting related data is using the attribute name on the parent. These lines do exactly the same:
 
 ```
-mAuthor.set('user', {id: 1, name: 'foo'});
-mAuthor.get('user').set({id: 1, name: 'foo'});
-```
-
-## Backbone.Model
-
-If a model is passed in, that model's attributes will be copied using `toJSON` and is actually no different from giving a hash. So, it will not replace the existing model with the given model:
-
-```
-mSomeModel = new Backbone.Model({id: 1, name: 'foo'});
-mAuthor.set('user', mSomeModel);
-mAuthor.get('user') === mSomeModel // -> false
+mAuthor.get('user').set('id', 17);
+mAuthor.set('user', {id: 17});
+mAuthor.set({user: {id: 17}});
 ```
 
 
-# Setting related collection data
-
-TODO
-
-# Old
-
-Every instance of MAuthor now has instances of MUser, CChannel and CContact. You can use it as follows:
+This implies that once a relation is set, it cannot be overridden with another value. If you do really want to set another instance for a relation, then first use `unset`:
 
 ```
-var mAuthor = new MAuthor({
-    id: 1,
-    name: 'Burhan',
-    user: {
-        id: 1,
-        name: 'my user name',
-    },
-
-    // Only the ids are specified, so three models of MChannel will be created by CChannel.
-    channels: [1, 2, 3],
-
-    // Here more detailed models of MContact will be created since more data is available.
-    contacts: [
-        {id: 1, name: 'Jeff', position: 'engineer'},
-        {id: 2, name: 'Dean', position: 'tester'},
-        {id: 3, name: 'James', position: 'spec'}
-    ]
-});
-
-// Returns 'Burhan'.
-mAuthor.get('name');
-
-// Returns 'my user name'.
-mAuthor.get('user').get('name');
-
-// Sets the related user name to 'another user name'.
-mAuthor.set('user', {name: 'another user name'});
-
-// Returns 'another user name'.
-mAuthor.get('user').get('name');                
-```
-
-## Setting an existing model
-
-Upon creating a new model one of 2 things might happen:
-
-- If no existing related model is given, a new model is created.
-- If an existing related model is given, that model will be used.
-
-Once a related model is created and set, it will never change into another instance.
-
-```
-var mAuthor = new MAuthor();
-
-// Essentially we are doing the same as above, except with an existing model.
-var mUser = new MUser({id: 17, name: 'copy'});
+mAuthor.unset('user');
 mAuthor.set('user', mUser);
-mAuthor.get('user').get('name');                // 'copy'
-mAuthor.get('user') === mUser;                  // false
+```
 
-mAuthor.get('channels').get(1);                 // Instance of MChannel.
-mAuthor.get('contacts').get(1).get('name');     // 'Jeff'.
 
-mAuthor.set('channels', [4]);
-mAuthor.get('channels').toJSON();               // [{id: 4}]
+# Getting related data
 
-mAuthor.set('channels', [5], {remove: false});
-mAuthor.get('channels').toJSON();               // [{id: 4}, {id: 5}]
+You can use vanilla Backbone to get related data:
 
-var cChannel = new CChannel([{id: 1}, {id: 2}, {id: 3}];
-mAuthor.set('channels', cChannel);
-mAuthor.get('channels').toJSON(cChannel);       // [{id: 1}, {id: 2}, {id: 3}]
-mAuthor.get('channels') === cChannel;           // false
+```
+mAuther.get('user'); // -> Instance of MUser.
+mAuther.get('user').get('id') // -> Get the id of the related user.
+```
+
+## Model.dot
+
+Shorthand for getting nested attributes. Example:
+
+```     
+model
+    .get('nestedModel1')
+    .get('nestedCollection2')
+    .get('nestedIdOfModel3')
+    .get('foo');
+```
+
+can be written like:
+
+```
+model.dot('nestedModel1.nestedCollection2.nestedIdOfModel3.foo');
+```
+
+This depends on that the nested relation has a `get` function defined. That function is called each time a dot is found. If you try to use dot on a value that does not have the function `get` defined, it will return `undefined`:
+
+Returns undefined because of `someString` is a string without a `get` function defined:
+
+```
+model.dot('nestedModel1.someString.foo.bar');
+```
+
+Returns undefined because of `object` is an object without a `get` function defined:
+
+```
+model.dot('nestedModel1.object.foo.bar');
+```
+
+Returns undefined because of `nonExistingModelOrCollection` is undefined and thus without a `get` function defined:
+
+```
+model.dot('nestedModel1.nonExistingModelOrCollection.foo.bar');
+```
+
+Returns undefined because of `nonExistingId` is  undefined and thus without a `get` function defined:
+
+```
+model.dot('nestedCollection1.nonExistingId.foo.bar');
+```
+
+It's impossible to retrieve attributes with a `.` in the name. You can use `get` instead:
+
+```
+model.dot('nestedModel1.nestedCollection2.nestedIdOfModel3').get('foo.bar');
 ```
