@@ -17,6 +17,7 @@
     "pretest": "npm run -s build-js && npm run -s lint-js",
     "test": "echo 'Running backbone tests...'; ./backbone/node_modules/.bin/karma start",
     "lint-js": "eslint index.js",
-    "build-js": "babel index.js -o index.es5.js"
+    "build-js": "babel index.js -o index.es5.js",
+    "deps": "git submodule update --init --recursive && npm install && cd backbone; npm install"
   }
 }
