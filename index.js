@@ -113,7 +113,7 @@ const BurhanModel = Backbone.Model.extend({
                 if (newValue instanceof constructor) {
                     attributes[relation] = newValue;
                 } else {
-                    attributes[relation] = new constructor(newValue, options);
+                    attributes[relation] = this.createRelated(relation, newValue, constructor, options);
                 }
 
                 changes.push(relation);
@@ -126,6 +126,9 @@ const BurhanModel = Backbone.Model.extend({
         });
 
         return changes;
+    },
+    createRelated(relation, val, constructor, options) {
+        return new constructor(val, options);
     },
      /**
      * Shorthand for getting nested attributes.
