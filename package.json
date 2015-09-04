@@ -2,6 +2,7 @@
   "name": "backbone-relation",
   "version": "0.0.0",
   "private": true,
+  "main": "index.es5.js",
   "dependencies": {
     "backbone": "1.2.1",
     "lodash": "^3.10.0"
