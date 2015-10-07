@@ -14,7 +14,7 @@
 const BM = Backbone.Model;
 const BurhanModel = Backbone.Model.extend({
     createRelations: true,
-    relations: {},
+    relations: () => {},
     constructor: function Constructor(attributes, options) {
         const attrs = _.defaults({}, attributes);
         let createRelations = this.createRelations;
@@ -25,7 +25,7 @@ const BurhanModel = Backbone.Model.extend({
         }
 
         if (createRelations) {
-            _.each(this.relations, function(MRelation, name) {
+            _.each(this.relations(), function(MRelation, name) {
                 attrs[name] = new MRelation(attrs[name], options);
             });
         }
@@ -100,10 +100,10 @@ const BurhanModel = Backbone.Model.extend({
         };
         const changes = [];
 
-        _.each(_.intersection(_.keys(this.relations), _.keys(attributes)), (relation) => {
+        _.each(_.intersection(_.keys(this.relations()), _.keys(attributes)), (relation) => {
             const newValue = attributes[relation];
             const currentValue = this.get(relation);
-            const constructor = getModuleFromRelations(this.relations, relation);
+            const constructor = getModuleFromRelations(this.relations(), relation);
 
             // Create the relation if currentValue isn't the correct instance.
             // If it is, then call set on the relation.
