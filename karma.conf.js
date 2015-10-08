@@ -13,10 +13,10 @@ module.exports = function(config) {
         'backbone/test/vendor/json2.js',
         'backbone/test/vendor/underscore.js',
         'backbone/backbone.js',
-        'index.es5.js',
+        'dist/backbone-relation.js',
         'backbone/test/setup/*.js',
         'backbone/test/*.js',
-        'test/*.js'
+        'test/*.js',
     ],
 
     // test results reporter to use

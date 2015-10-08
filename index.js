@@ -6,13 +6,10 @@
  * @param {[type]} val     [description]
  * @param {[type]} options [description]
  */
+import _ from 'underscore';
+import Backbone from 'backbone';
 
-// ++++ TEMP HACK to run unit tests ++++
-// The unit tests all use Backbone.Model from the global namespace. Here we
-// extend the Backbone.Model, but eventually replace Backbone.Model with the
-// patched one and run unit test against it.
-const BM = Backbone.Model;
-const BurhanModel = Backbone.Model.extend({
+export default Backbone.Model.extend({
     createRelations: true,
     relations: {},
     constructor: function Constructor(attributes, options) {
@@ -30,7 +27,7 @@ const BurhanModel = Backbone.Model.extend({
             });
         }
 
-        return BM.call(this, _.isEmpty(attrs) ? attributes : attrs, options);
+        return Backbone.Model.call(this, _.isEmpty(attrs) ? attributes : attrs, options);
     },
     /**
      * Returns an object based on key, value. Mostly Copy-paste from Backbone.
@@ -78,7 +75,7 @@ const BurhanModel = Backbone.Model.extend({
         changes = this.setRelated(attrs, options);
         // }
 
-        result = BM.prototype.set.call(this, attrs, options);
+        result = Backbone.Model.prototype.set.call(this, attrs, options);
 
         // This is a copy paste from Backbone.js codebase. Changes made
         // using setRelated should also be triggered higer up. It
@@ -159,6 +156,3 @@ const BurhanModel = Backbone.Model.extend({
         return result;
     },
 });
-
-Backbone.Model = BurhanModel;
-// ---- TEMP HACK to run unit tests ----
