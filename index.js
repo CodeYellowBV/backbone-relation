@@ -9,6 +9,8 @@
 import _ from 'underscore';
 import Backbone from 'backbone';
 
+const BM = Backbone.Model;
+
 export default Backbone.Model.extend({
     createRelations: true,
     relations: {},
@@ -27,7 +29,7 @@ export default Backbone.Model.extend({
             });
         }
 
-        return Backbone.Model.call(this, _.isEmpty(attrs) ? attributes : attrs, options);
+        return BM.call(this, _.isEmpty(attrs) ? attributes : attrs, options);
     },
     /**
      * Returns an object based on key, value. Mostly Copy-paste from Backbone.
@@ -75,7 +77,7 @@ export default Backbone.Model.extend({
         changes = this.setRelated(attrs, options);
         // }
 
-        result = Backbone.Model.prototype.set.call(this, attrs, options);
+        result = BM.prototype.set.call(this, attrs, options);
 
         // This is a copy paste from Backbone.js codebase. Changes made
         // using setRelated should also be triggered higer up. It

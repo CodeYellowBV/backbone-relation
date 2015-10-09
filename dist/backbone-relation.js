@@ -77,6 +77,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
+	var BM = _backbone2['default'].Model;
+
 	exports['default'] = _backbone2['default'].Model.extend({
 	    createRelations: true,
 	    relations: {},
@@ -95,7 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 
-	        return _backbone2['default'].Model.call(this, _underscore2['default'].isEmpty(attrs) ? attributes : attrs, options);
+	        return BM.call(this, _underscore2['default'].isEmpty(attrs) ? attributes : attrs, options);
 	    },
 	    /**
 	     * Returns an object based on key, value. Mostly Copy-paste from Backbone.
@@ -143,7 +145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        changes = this.setRelated(attrs, options);
 	        // }
 
-	        result = _backbone2['default'].Model.prototype.set.call(this, attrs, options);
+	        result = BM.prototype.set.call(this, attrs, options);
 
 	        // This is a copy paste from Backbone.js codebase. Changes made
 	        // using setRelated should also be triggered higer up. It
