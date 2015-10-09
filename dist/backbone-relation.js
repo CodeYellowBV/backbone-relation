@@ -141,13 +141,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            options = {};
 	        }
 
+	        // If a backbone model is given, use these attributes instead of setting the model as attribute.
 	        if (attrs instanceof BM) {
 	            attrs = attrs.attributes;
 	        }
 
-	        // if (attrs && !options.skipFormatAttributes) {
 	        changes = this.setRelated(attrs, options);
-	        // }
 
 	        result = BM.prototype.set.call(this, attrs, options);
 

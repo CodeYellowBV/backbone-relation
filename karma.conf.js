@@ -19,10 +19,23 @@ module.exports = function(config) {
             'test/*.js',
         ],
 
+        // Manually add plugins so it finds our local karma-coverage;
+        // without this,it searches only in backbone/node_modules
+        plugins: [
+            'karma-qunit',
+            'karma-phantomjs-launcher',
+            'karma-coverage',
+        ],
+
         // test results reporter to use
-        // possible values: 'dots', 'progress'
+        // possible values: 'dots', 'progress', 'coverage'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress'],
+        reporters: ['progress', 'coverage'],
+
+        preprocessors: {
+            // files that should show up in the coverage report
+            'dist/*.js': ['coverage'],
+        },
 
         // web server port
         port: 9877,
