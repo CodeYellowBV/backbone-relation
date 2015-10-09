@@ -1,12 +1,14 @@
 {
   "name": "backbone-relation",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Simple support for relations for Backbone models",
   "author": "Burhan Zainuddin <burhan@codeyellow.nl>",
-  "contributors": [{
-    "name": "Kees Kluskens",
-    "email": "kees@codeyellow.nl"
-  }],
+  "contributors": [
+    {
+      "name": "Kees Kluskens",
+      "email": "kees@codeyellow.nl"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/CodeYellowBV/backbone-relation"
@@ -14,7 +16,12 @@
   "bugs": {
     "url": "https://github.com/CodeYellowBV/backbone-relation/issues"
   },
-  "keywords": ["backbone", "relation", "nested", "model"],
+  "keywords": [
+    "backbone",
+    "relation",
+    "nested",
+    "model"
+  ],
   "license": "ISC",
   "main": "dist/backbone-relation.js",
   "dependencies": {
