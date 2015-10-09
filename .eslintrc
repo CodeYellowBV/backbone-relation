@@ -1,18 +1,4 @@
 {
     "extends": "./node_modules/codeyellow-style/.eslintrc",
-    "root": true,
-
-    // These globals are defined in Webpack.
-    "globals": {
-        "_": true,
-        "$": true,
-        "moment": true,
-        "vent": true,
-        "Backbone": true,
-        "Marionette": true,
-        "expect": true
-    },
-    "env": {
-        "mocha": true
-    }
+    "root": true
 }

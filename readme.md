@@ -1,8 +1,11 @@
-# backbone-relations
+# backbone-relation
 
-Backbone does not support relations by default. This is a simple package that adds relations to Backbone. If you want more features, check out http://backbonerelational.org/.
+Backbone does not support relations by default. This is a simple package that adds relations to Backbone.
 
 The idea is simple: you can define relations like you define defaults. A relation can be either a Model or a Collection and can attributes can be set recursively through the parent.
+
+Why use this over [backbone-relational](http://backbonerelational.org/)?
+We found backbone-relational too complex. Itʼs basically an ORM in the frontend. We didnʼt need that, hence this package. 
 
 # Defining relations
 

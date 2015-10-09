@@ -1,7 +1,21 @@
 {
   "name": "backbone-relation",
   "version": "0.0.0",
-  "private": true,
+  "description": "Simple support for relations for Backbone models",
+  "author": "Burhan Zainuddin <burhan@codeyellow.nl>",
+  "contributors": [{
+    "name": "Kees Kluskens",
+    "email": "kees@codeyellow.nl"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeYellowBV/backbone-relation"
+  },
+  "bugs": {
+    "url": "https://github.com/CodeYellowBV/backbone-relation/issues"
+  },
+  "keywords": ["backbone", "relation", "nested", "model"],
+  "license": "ISC",
   "main": "dist/backbone-relation.js",
   "dependencies": {
     "backbone": "1.0.0 - 1.2.3",
@@ -9,16 +23,16 @@
   },
   "devDependencies": {
     "webpack": "^1.12.2",
-    "babel-core": "5.6.15",
-    "babel-loader": "^5.3.1",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
     "codeyellow-style": "git+https://bitbucket.org/codeyellow/codeyellow-style.git#v0.1.2",
     "eslint": "1.6.0"
   },
   "scripts": {
     "build": "webpack --progress --bail --colors",
-    "pretest": "npm run -s build && npm run -s lint-js",
+    "pretest": "npm run -s build && npm run -s lint",
     "test": "echo 'Running backbone tests...'; ./backbone/node_modules/.bin/karma start",
-    "lint-js": "eslint index.js",
+    "lint": "eslint index.js",
     "deps": "git submodule update --init --recursive && npm install && cd backbone; npm install"
   }
 }

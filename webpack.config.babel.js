@@ -8,7 +8,6 @@ export default {
         library: 'backbone-relation',
         libraryTarget: 'umd',
     },
-
     module: {
         loaders: [
             {
@@ -18,7 +17,6 @@ export default {
             },
         ],
     },
-
     externals: {
         backbone: {
             root: 'Backbone',
