@@ -141,6 +141,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            options = {};
 	        }
 
+	        if (attrs instanceof BM) {
+	            attrs = attrs.attributes;
+	        }
+
 	        // if (attrs && !options.skipFormatAttributes) {
 	        changes = this.setRelated(attrs, options);
 	        // }

@@ -79,6 +79,16 @@
         ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
     });
 
+    test('setting an existing model', 2, function() {
+        var mPost = new MPost();
+        var mAuthorOriginal = mPost.get('author');
+        var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
+
+        mPost.set({author: mAuthor});
+        ok(mPost.get('author') === mAuthorOriginal, 'use the existing model.');
+        deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
+    });
+
     test('getting a related model using dot', 2, function() {
         var mPost = new MPost({
             post: new MPost({

@@ -63,7 +63,7 @@ export default Backbone.Model.extend({
      */
     set(key, val, options) {
         const convertedAttributes = this.convertAttributes(key, val, options);
-        const attrs = convertedAttributes.attrs;
+        let attrs = convertedAttributes.attrs;
         let changes = [];
         let result = null;
 
@@ -73,9 +73,12 @@ export default Backbone.Model.extend({
             options = {};
         }
 
-        // if (attrs && !options.skipFormatAttributes) {
+        // If a backbone model is given, use these attributes instead of setting the model as attribute.
+        if (attrs instanceof BM) {
+            attrs = attrs.attributes;
+        }
+
         changes = this.setRelated(attrs, options);
-        // }
 
         result = BM.prototype.set.call(this, attrs, options);
 
