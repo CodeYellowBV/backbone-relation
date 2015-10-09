@@ -55,13 +55,17 @@
         ok(hasAuthor && hasEditor && hasWriters, 'it should create relations if createRelations is set to true in the options argument.');
     });
 
+    test('create new model without options', 1, function() {
+        var mPost = new MPost(null, {});
+        ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
+    });
+
     test('setting a related model', 4, function() {
         var MPostProxy = MPost.extend({createRelations: false});
         var mPost = new MPost();
         var authorAttributes = {id: 5, name: 'Burhan Zainuddin'};
         var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
 
-        debugger;
         equal(new MPost({author: {id: 1}}).get('author').get('id'), 1, 'using constructor.');
 
         mPost.set('author', {id: 1});

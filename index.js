@@ -19,7 +19,7 @@ export default Backbone.Model.extend({
         let createRelations = this.createRelations;
 
         // Make sure options takes precedence.
-        if (options) {
+        if (options && options.createRelations !== undefined) {
             createRelations = options.createRelations;
         }
 
