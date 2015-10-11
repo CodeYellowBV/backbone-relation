@@ -15,13 +15,9 @@ export default Backbone.Model.extend({
     createRelations: true,
     relations: {},
     constructor: function Constructor(attributes, options) {
+        options || (options = {});
         const attrs = _.defaults({}, attributes);
-        let createRelations = this.createRelations;
-
-        // Make sure options takes precedence.
-        if (options && options.createRelations !== undefined) {
-            createRelations = options.createRelations;
-        }
+        const createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
 
         if (createRelations) {
             _.each(_.result(this, 'relations'), function(MRelation, name) {
@@ -146,11 +142,12 @@ export default Backbone.Model.extend({
         const keys = key.trim('.').split('.');
         let result = this;
 
-        _.each(keys, (anotherKey) => {
+        _.some(keys, (anotherKey) => {
             if (typeof result !== 'undefined' && typeof result.get === 'function') {
                 result = result.get(anotherKey);
             } else {
-                result = undefined;
+                // Stop looping as soon as there is no result.
+                return true;
             }
         });
 
