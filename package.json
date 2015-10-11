@@ -43,7 +43,7 @@
     "pretest": "npm run -s build && npm run -s lint",
     "test": "echo 'Running backbone tests...'; ./backbone/node_modules/.bin/karma start",
     "preversion": "npm run -s test",
-    "version": "git add dist",
+    "version": "git add -A dist",
     "deps": "git submodule update --init --recursive && npm install && cd backbone; npm install"
   }
 }
