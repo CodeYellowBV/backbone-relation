@@ -89,7 +89,7 @@
         deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
     });
 
-    test('getting a related model using dot', 2, function() {
+    test('getting a related model using dot', 4, function() {
         var mPost = new MPost({
             post: new MPost({
                 id: 2,
@@ -98,8 +98,10 @@
             author: {id: 5, name: 'Burhan Zainuddin'}
         });
 
-        equal(mPost.dot('author.id'), 5, 'on a related attribute.');
-        equal(mPost.dot('post.author.id'), 6, 'on a related related attribute.');
+        strictEqual(mPost.dot('author.id'), 5, 'on a related attribute.');
+        strictEqual(mPost.dot('post.author.id'), 6, 'on a related related attribute.');
+        strictEqual(mPost.dot('post.nope.id'), undefined, 'on a not existing relation.');
+        strictEqual(mPost.dot(null), undefined, 'using a null value.');
     });
 
   // test('setting a related model', 5, function() {
