@@ -38,10 +38,12 @@
     "eslint": "1.6.0"
   },
   "scripts": {
+    "lint": "eslint index.js",
     "build": "webpack --progress --bail --colors",
     "pretest": "npm run -s build && npm run -s lint",
     "test": "echo 'Running backbone tests...'; ./backbone/node_modules/.bin/karma start",
-    "lint": "eslint index.js",
+    "preversion": "npm run -s test",
+    "version": "git add dist",
     "deps": "git submodule update --init --recursive && npm install && cd backbone; npm install"
   }
 }
