@@ -1,6 +1,5 @@
 (function() {
-
-    module('Backbone.Relation it should ');
+    QUnit.module('Backbone.Relation it should ');
     var model = null;
     var MAuthor = Backbone.Model.extend();
     var MEditor = Backbone.Model.extend();
@@ -13,13 +12,13 @@
             },
     });
 
-    test('create a new model', 1, function() {
+    QUnit.test('create a new model', 1, function(assert) {
         model = new Backbone.Model();
 
-        deepEqual(model.relations, {}, 'with empty relations.');
+        assert.deepEqual(model.relations, {}, 'with empty relations.');
     });
 
-    test('create a new model with relations', 4, function() {
+    QUnit.test('create a new model with relations', 4, function(assert) {
         var hasAuthor = false;
         var hasEditor = false;
         var hasWriters = false;
@@ -31,65 +30,65 @@
         hasAuthor = mPost.get('author') instanceof MAuthor;
         hasEditor = mPost.get('editor') instanceof MEditor;
         hasWriters = mPost.get('writers') instanceof CWriter;
-        ok(hasAuthor && hasEditor && hasWriters, 'it should create relations those relations by default.');
+        assert.ok(hasAuthor && hasEditor && hasWriters, 'it should create relations those relations by default.');
 
         // Make sure that `options` takes precendence.
         mPost = new MPostProxy(null, {createRelations: false});
         hasAuthor = mPost.get('author') instanceof MAuthor;
         hasEditor = mPost.get('editor') instanceof MEditor;
         hasWriters = mPost.get('writers') instanceof CWriter;
-        ok(!hasAuthor && !hasEditor && !hasWriters, 'it should not create relations if createRelations is set to false in the options argument.');
+        assert.ok(!hasAuthor && !hasEditor && !hasWriters, 'it should not create relations if createRelations is set to false in the options argument.');
 
         MPostProxy = MPostProxy.extend({createRelations: false});
         mPost = new MPostProxy(null);
         hasAuthor = mPost.get('author') instanceof MAuthor;
         hasEditor = mPost.get('editor') instanceof MEditor;
         hasWriters = mPost.get('writers') instanceof CWriter;
-        ok(!hasAuthor && !hasEditor && !hasWriters, 'it should not create relations if createRelations is set to false when extending the model.');
+        assert.ok(!hasAuthor && !hasEditor && !hasWriters, 'it should not create relations if createRelations is set to false when extending the model.');
 
         // Make sure that `options` takes precendence.
         mPost = new MPostProxy(null, {createRelations: true});
         hasAuthor = mPost.get('author') instanceof MAuthor;
         hasEditor = mPost.get('editor') instanceof MEditor;
         hasWriters = mPost.get('writers') instanceof CWriter;
-        ok(hasAuthor && hasEditor && hasWriters, 'it should create relations if createRelations is set to true in the options argument.');
+        assert.ok(hasAuthor && hasEditor && hasWriters, 'it should create relations if createRelations is set to true in the options argument.');
     });
 
-    test('create new model without options', 1, function() {
+    QUnit.test('create new model without options', 1, function(assert) {
         var mPost = new MPost(null, {});
-        ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
+        assert.ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
     });
 
-    test('setting a related model', 4, function() {
+    QUnit.test('setting a related model', 4, function(assert) {
         var MPostProxy = MPost.extend({createRelations: false});
         var mPost = new MPost();
         var authorAttributes = {id: 5, name: 'Burhan Zainuddin'};
         var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
 
-        equal(new MPost({author: {id: 1}}).get('author').get('id'), 1, 'using constructor.');
+        assert.equal(new MPost({author: {id: 1}}).get('author').get('id'), 1, 'using constructor.');
 
         mPost.set('author', {id: 1});
-        equal(mPost.get('author').get('id'), 1, 'using key-value pairs.');
+        assert.equal(mPost.get('author').get('id'), 1, 'using key-value pairs.');
 
         mPost.set({author: authorAttributes});
-        deepEqual(mPost.get('author').toJSON(), authorAttributes, 'using a hash.');
+        assert.deepEqual(mPost.get('author').toJSON(), authorAttributes, 'using a hash.');
 
         mPost = new MPostProxy();
         mPost.set('author', null);
-        ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
+        assert.ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
     });
 
-    test('setting an existing model', 2, function() {
+    QUnit.test('setting an existing model', 2, function(assert) {
         var mPost = new MPost();
         var mAuthorOriginal = mPost.get('author');
         var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
 
         mPost.set({author: mAuthor});
-        ok(mPost.get('author') === mAuthorOriginal, 'use the existing model.');
-        deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
+        assert.ok(mPost.get('author') === mAuthorOriginal, 'use the existing model.');
+        assert.deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
     });
 
-    test('getting a related model using dot', 4, function() {
+    QUnit.test('getting a related model using dot', 4, function(assert) {
         var mPost = new MPost({
             post: new MPost({
                 id: 2,
@@ -98,13 +97,13 @@
             author: {id: 5, name: 'Burhan Zainuddin'}
         });
 
-        strictEqual(mPost.dot('author.id'), 5, 'on a related attribute.');
-        strictEqual(mPost.dot('post.author.id'), 6, 'on a related related attribute.');
-        strictEqual(mPost.dot('post.nope.id'), undefined, 'on a not existing relation.');
-        strictEqual(mPost.dot(null), undefined, 'using a null value.');
+        assert.strictEqual(mPost.dot('author.id'), 5, 'on a related attribute.');
+        assert.strictEqual(mPost.dot('post.author.id'), 6, 'on a related related attribute.');
+        assert.strictEqual(mPost.dot('post.nope.id'), undefined, 'on a not existing relation.');
+        assert.strictEqual(mPost.dot(null), undefined, 'using a null value.');
     });
 
-  // test('setting a related model', 5, function() {
+  // QUnit.test('setting a related model', 5, function() {
   //   var MPostProxy = MPost.extend({createRelations: false});
   //   var mPost = new MPost();
   //   var authorAttributes = {id: 5, name: 'Burhan Zainuddin'};
@@ -125,7 +124,7 @@
   //   ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
   // });
 
-  // test('setting a related collection', 1, function() {
+  // QUnit.test('setting a related collection', 1, function() {
   //   var mPost = new MPost();
   //   var cWriter = new CWriter([
   //       {id: 5, name: 'Burhan Zainuddin'},
