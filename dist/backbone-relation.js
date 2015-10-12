@@ -83,13 +83,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    createRelations: true,
 	    relations: {},
 	    constructor: function Constructor(attributes, options) {
+	        options || (options = {});
 	        var attrs = _underscore2['default'].defaults({}, attributes);
-	        var createRelations = this.createRelations;
-
-	        // Make sure options takes precedence.
-	        if (options && options.createRelations !== undefined) {
-	            createRelations = options.createRelations;
-	        }
+	        var createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
 
 	        if (createRelations) {
 	            _underscore2['default'].each(_underscore2['default'].result(this, 'relations'), function (MRelation, name) {
@@ -142,7 +138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        // If a backbone model is given, use these attributes instead of setting the model as attribute.
-	        if (attrs instanceof BM) {
+	        // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
+	        if (typeof attrs === 'object' && attrs.cid) {
 	            attrs = attrs.attributes;
 	        }
 
@@ -216,11 +213,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var keys = key.trim('.').split('.');
 	        var result = this;
 
-	        _underscore2['default'].each(keys, function (anotherKey) {
+	        _underscore2['default'].some(keys, function (anotherKey) {
 	            if (typeof result !== 'undefined' && typeof result.get === 'function') {
 	                result = result.get(anotherKey);
 	            } else {
-	                result = undefined;
+	                // Stop looping as soon as there is no result.
+	                return true;
 	            }
 	        });
 
