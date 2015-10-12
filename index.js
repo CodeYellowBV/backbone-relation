@@ -70,7 +70,8 @@ export default Backbone.Model.extend({
         }
 
         // If a backbone model is given, use these attributes instead of setting the model as attribute.
-        if (attrs instanceof BM) {
+        // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
+        if (typeof attrs === 'object' && attrs.cid) {
             attrs = attrs.attributes;
         }
 
