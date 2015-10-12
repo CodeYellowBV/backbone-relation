@@ -124,22 +124,20 @@
   //   ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
   // });
 
-  // QUnit.test('setting a related collection', 1, function() {
-  //   var mPost = new MPost();
-  //   var cWriter = new CWriter([
-  //       {id: 5, name: 'Burhan Zainuddin'},
-  //       {id: 6, name: 'AB Zainuddin'}
-  //   ]);
-  //   var cWriterOthers = new CWriter([
-  //       {id: 7, name: 'Burhan Zainuddin'},
-  //       {id: 8, name: 'AB Zainuddin'}
-  //   ]);
+  QUnit.test('setting a related collection', 1, function(assert) {
+    var mPost = new MPost();
+    var cWriter = new CWriter([
+        {id: 5, name: 'Burhan Zainuddin'},
+        {id: 6, name: 'AB Zainuddin'}
+    ]);
+    var cWriterOthers = new CWriter([
+        {id: 7, name: 'Burhan Zainuddin'},
+        {id: 8, name: 'AB Zainuddin'}
+    ]);
 
-  //   debugger;
-
-  //   mPost.get('writers').set(cWriter);
-  //   mPost.get('writers').set(cWriterOthers);
-  //   console.log(mPost.get('writers').pluck('id'));
-  //   equal(cWriter.length, 4, 'with a collection will append the given models.');
-  // });
+    mPost.set('writers', cWriter);
+    mPost.set('writers', cWriterOthers);
+    console.log(mPost.get('writers').toJSON());
+    assert.equal(mPost.get('writers').length, 4, 'with a collection will append the given models.');
+  });
 })();
