@@ -1,4 +1,4 @@
-## 0.1.3
+## 0.1.4
 - When setting a Backbone collection, use the models from this collection instead of adding the collection as a model. `mPost.set('writers', cWriter)` will use the same Writer collection instance and add those models to the writers collection.
 - Add comments to methods to better describe what they do.
 
