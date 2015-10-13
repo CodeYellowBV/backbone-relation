@@ -102,6 +102,8 @@ export default Backbone.Model.extend({
             attrs = attrs.attributes;
         }
 
+        attrs = this.formatAttributes(attrs, options);
+
         // Find all related objects and call set on those objects.
         changes = this.setRelated(attrs, options);
 
@@ -120,6 +122,16 @@ export default Backbone.Model.extend({
         }
 
         return result;
+    },
+    /**
+     * Format attributes before setting.
+     *
+     * @param  {Object} attrs
+     * @param  {Object} options
+     * @return {Object} Formatted attrs
+     */
+    formatAttributes(attrs, options) { // eslint-disable-line no-unused-vars
+        return attrs;
     },
     /**
      * Find attributes that map to a related object and call set on that object.

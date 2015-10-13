@@ -1,3 +1,6 @@
+## 0.1.6
+- Add `formatAttributes` method where you can provide a custom formatter for attributes before setting.
+
 ## 0.1.5
 - Setting a relation in the constructor of a model now works.
 

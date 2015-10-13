@@ -18,6 +18,18 @@
         assert.deepEqual(model.relations, {}, 'with empty relations.');
     });
 
+    QUnit.test('allow setting a custom attributes format', 1, function(assert) {
+        var Model = Backbone.Model.extend({
+            formatAttributes: function(attrs) {
+                attrs.test = true;
+                return attrs;
+            }
+        });
+        model = new Model();
+
+        assert.ok(model.get('test'), true);
+    });
+
     QUnit.test('create a new model with relations', 4, function(assert) {
         var hasAuthor = false;
         var hasEditor = false;
