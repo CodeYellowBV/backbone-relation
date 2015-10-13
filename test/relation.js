@@ -78,13 +78,18 @@
         assert.ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
     });
 
-    QUnit.test('setting an existing model', 2, function(assert) {
+    QUnit.test('setting an existing model', 3, function(assert) {
         var mPost = new MPost();
         var mAuthorOriginal = mPost.get('author');
         var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
 
+        // Set already existing model in mPost.
         mPost.set({author: mAuthor});
         assert.ok(mPost.get('author') === mAuthorOriginal, 'use the existing model.');
+        assert.deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
+
+        // Set not yet existing model.
+        mPost = new MPost({author: mAuthor});
         assert.deepEqual(mPost.get('author').toJSON(), {id: 6, name: 'AB Zainuddin'}, 'using a hash.');
     });
 
@@ -124,20 +129,30 @@
   //   ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
   // });
 
-  QUnit.test('setting a related collection', 1, function(assert) {
-    var mPost = new MPost();
-    var cWriter = new CWriter([
-        {id: 5, name: 'Burhan Zainuddin'},
-        {id: 6, name: 'AB Zainuddin'}
-    ]);
-    var cWriterOthers = new CWriter([
-        {id: 7, name: 'Burhan Zainuddin'},
-        {id: 8, name: 'AB Zainuddin'}
-    ]);
+    QUnit.test('setting a related collection', 5, function(assert) {
+        var mPost = new MPost();
+        var cWriter = new CWriter([
+            {id: 5, name: 'Burhan'},
+            {id: 6, name: 'Zaico'}
+        ]);
+        var cWriterOthers = new CWriter([
+            {id: 7, name: 'Kees'},
+            {id: 8, name: 'SpaceK33z'}
+        ]);
+        var cWriterMoar = new CWriter([
+            {id: 9, name: 'Jasper'},
+            {id: 10, name: 'Japser'}
+        ]);
 
-    mPost.set('writers', cWriter);
-    mPost.set('writers', cWriterOthers);
-    console.log(mPost.get('writers').toJSON());
-    assert.equal(mPost.get('writers').length, 4, 'with a collection will append the given models.');
-  });
+        mPost.set('writers', cWriter);
+        mPost.set('writers', cWriterOthers);
+        assert.equal(mPost.get('writers').length, 2, 'with a collection will add / remove models.');
+        assert.deepEqual(mPost.get('writers').pluck('id'), [7, 8], 'has correct ids.');
+        mPost.set('writers', cWriterMoar, {remove: false});
+        assert.equal(mPost.get('writers').length, 4, 'with remove:false will add models.');
+        assert.deepEqual(mPost.get('writers').pluck('id'), [7, 8, 9, 10], 'has correct ids.');
+
+        mPost.set('writers', [{id: 1, name: 'Peter'}, {id: 2, name: 'Sjamaan'}]);
+        assert.deepEqual(mPost.get('writers').pluck('id'), [1, 2], 'with an array will have correct ids.');
+    });
 })();

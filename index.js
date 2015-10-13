@@ -12,7 +12,17 @@ import Backbone from 'backbone';
 const BM = Backbone.Model;
 
 export default Backbone.Model.extend({
+    /**
+     * If true, create relations defined in the relations key.
+     *
+     * @type {Boolean}
+     */
     createRelations: true,
+    /**
+     * This can be a object or a function which should return an object.
+     *
+     * @type {Object|Function}
+     */
     relations: {},
     constructor: function Constructor(attributes, options) {
         options || (options = {});
@@ -35,7 +45,16 @@ export default Backbone.Model.extend({
         return BM.call(this, attrs, options);
     },
     /**
-     * Returns an object based on key, value. Mostly Copy-paste from Backbone.
+     * Convert (key, value, options) to {attrs: attrs, options: options}.
+     *
+     * Model.set has 2 styles in which you can call the function:
+     * - Model.set(key, value, options)
+     * - Model.set(attrs, options)
+     *
+     * This is a helper function to use the Model.set(attrs, options) variant.
+     * Mostly copy-paste from Backbone.
+     *
+     * @return {Object} {attrs: attrs, options: options}
      */
     convertAttributes(key, val, options) {
         let attrs = {};
@@ -55,14 +74,10 @@ export default Backbone.Model.extend({
             options,
         };
     },
-
     /**
-     * Override default set to take into account the relations that are defined. It
-     * should not be possible to overwrite a relation with another value.
-     *
-     * @param {[type]} key     [description]
-     * @param {[type]} val     [description]
-     * @param {[type]} options [description]
+     * Override default set to take into account the relations that are defined.
+     * It should not be possible to overwrite an existing relation with another
+     * value.
      */
     set(key, val, options) {
         const convertedAttributes = this.convertAttributes(key, val, options);
@@ -78,16 +93,17 @@ export default Backbone.Model.extend({
 
         // If a backbone model is given, use these attributes instead of setting the model as attribute.
         // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
-        if (typeof attrs === 'object' && attrs.cid) {
+        if (attrs instanceof BM) {
             attrs = attrs.attributes;
         }
 
+        // Find all related objects and call set on those objects.
         changes = this.setRelated(attrs, options);
 
         result = BM.prototype.set.call(this, attrs, options);
 
         // This is a copy paste from Backbone.js codebase. Changes made
-        // using setRelated should also be triggered higer up. It
+        // using setRelated should also be triggered higher up. It
         // might be better to listen to related models and trigger based
         // on that than accumulating all changes and iterating over it.
         //
@@ -100,12 +116,20 @@ export default Backbone.Model.extend({
 
         return result;
     },
+    /**
+     * Find attributes that map to a related object and call set on that object.
+     *
+     * @param {Object} attributes
+     * @param {Object} options
+     * @return {array} List of attribute keys which have changed.
+     */
     setRelated(attributes, options) {
         const getModuleFromRelations = function(relations, relation) {
             return relations[relation].module ? relations[relation].module : relations[relation];
         };
         const changes = [];
 
+        // Find attributes that map to a relation.
         _.each(_.intersection(_.keys(_.result(this, 'relations')), _.keys(attributes)), (relation) => {
             const newValue = attributes[relation];
             const currentValue = this.get(relation);
@@ -124,7 +148,9 @@ export default Backbone.Model.extend({
 
                 changes.push(relation);
             } else {
-                currentValue.set(newValue);
+                // The current value is of the correct type. Now proxy the set
+                // operation and let each type decide what to do with newValue.
+                this.setByModelOrCollection(currentValue, newValue, options);
                 changes.push(relation);
 
                 delete attributes[relation];
@@ -133,6 +159,50 @@ export default Backbone.Model.extend({
 
         return changes;
     },
+    /**
+     * Call set on the related object and let that object decide what to do.
+     *
+     * @param {string} relation The relation identifier.
+     * @param {mixed} value The new value.
+     * @param {Object} options The options to given as an argument to the related set function.
+     */
+    setByModelOrCollection(relation, value, options) {
+        if (relation instanceof BM) {
+            this.setByModel(relation, value, options);
+        } else if (relation instanceof Backbone.Collection) {
+            this.setByCollection(relation, value, options);
+        } else {
+            throw new Error('Relation is not a model or collection?');
+        }
+    },
+    /**
+     * Set a value to a model. Here you can format the value before setting it
+     * to the model.
+     *
+     * @param {Backbone.Model} model
+     * @param {mixed} value
+     * @param {mixed} options
+     */
+    setByModel(model, value, options) {
+        model.set(value, options);
+    },
+    /**
+     * Similar to setByModel, but for a Collection.
+     *
+     * @param {Backbone.Collection} collection
+     * @param {mixed} value
+     * @param {mixed} options
+     */
+    setByCollection(collection, value, options) {
+        if (value instanceof Backbone.Collection) {
+            collection.set(value.models, options);
+        } else {
+            collection.set(value, options);
+        }
+    },
+    /**
+     * Create a new instance of relation.
+     */
     createRelated(relation, val, constructor, options) {
         return new constructor(val, options);
     },
