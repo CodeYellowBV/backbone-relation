@@ -71,6 +71,7 @@
         assert.equal(mPost.get('author').get('id'), 1, 'using key-value pairs.');
 
         mPost.set({author: authorAttributes});
+
         assert.deepEqual(mPost.get('author').toJSON(), authorAttributes, 'using a hash.');
 
         mPost = new MPostProxy();
@@ -129,7 +130,7 @@
   //   ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
   // });
 
-    QUnit.test('setting a related collection', 5, function(assert) {
+    QUnit.test('setting a related collection', 6, function(assert) {
         var mPost = new MPost();
         var cWriter = new CWriter([
             {id: 5, name: 'Burhan'},
@@ -154,5 +155,10 @@
 
         mPost.set('writers', [{id: 1, name: 'Peter'}, {id: 2, name: 'Sjamaan'}]);
         assert.deepEqual(mPost.get('writers').pluck('id'), [1, 2], 'with an array will have correct ids.');
+
+        mPost = new MPost({
+            writers: cWriterOthers,
+        });
+        assert.deepEqual(mPost.get('writers').pluck('id'), [7, 8], 'blaatschaap.');
     });
 })();

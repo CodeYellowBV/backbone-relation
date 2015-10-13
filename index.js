@@ -30,16 +30,21 @@ export default Backbone.Model.extend({
         const relations = _.result(this, 'relations');
         let attrs = attributes instanceof BM ? attributes.toJSON() : attributes;
 
-        if (createRelations) {
-            if (!_.isEmpty(relations)) {
-                if (typeof attrs !== 'object' || attrs === null) {
-                    attrs = {};
+        if (createRelations && !_.isEmpty(relations)) {
+            attrs || (attrs = {});
+
+            // Create all relations for the first time.
+            _.each(relations, (MRelation, name) => {
+                const mRelation = new MRelation();
+
+                // If you call Model.set() without attributes, Backbone will
+                // create an {undefined: undefined} attribute on your model.
+                if (attrs[name] !== undefined) {
+                    this.setByModelOrCollection(mRelation, attrs[name], options);
                 }
 
-                _.each(relations, function(MRelation, name) {
-                    attrs[name] = new MRelation(attrs[name], options);
-                });
-            }
+                attrs[name] = mRelation;
+            });
         }
 
         return BM.call(this, attrs, options);
