@@ -16,16 +16,23 @@ export default Backbone.Model.extend({
     relations: {},
     constructor: function Constructor(attributes, options) {
         options || (options = {});
-        const attrs = _.defaults({}, attributes);
         const createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
+        const relations = _.result(this, 'relations');
+        let attrs = attributes instanceof BM ? attributes.toJSON() : attributes;
 
         if (createRelations) {
-            _.each(_.result(this, 'relations'), function(MRelation, name) {
-                attrs[name] = new MRelation(attrs[name], options);
-            });
+            if (!_.isEmpty(relations)) {
+                if (typeof attrs !== 'object' || attrs === null) {
+                    attrs = {};
+                }
+
+                _.each(relations, function(MRelation, name) {
+                    attrs[name] = new MRelation(attrs[name], options);
+                });
+            }
         }
 
-        return BM.call(this, _.isEmpty(attrs) ? attributes : attrs, options);
+        return BM.call(this, attrs, options);
     },
     /**
      * Returns an object based on key, value. Mostly Copy-paste from Backbone.
