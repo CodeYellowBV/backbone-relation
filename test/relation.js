@@ -12,6 +12,25 @@
             },
     });
 
+    QUnit.test('add relations from a nested model', 2, function(assert) {
+        var mPost = new MPost({
+            author: {id: 5, name: 'Burhan Zainuddin'},
+        });
+
+        assert.ok(mPost.get('author') instanceof MAuthor);
+
+        var MBlog = Backbone.Model.extend({
+            relations: { post: MPost },
+        });
+
+        var mBlog = new MBlog({
+            post: mPost,
+        });
+
+        // After adding mPost to a mBlog, the original mPost should still have its relations.
+        assert.ok(mPost.get('author') instanceof MAuthor);
+    });
+
     QUnit.test('create a new model', 1, function(assert) {
         model = new Backbone.Model();
 
