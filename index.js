@@ -99,7 +99,7 @@ export default Backbone.Model.extend({
         // If a backbone model is given, use these attributes instead of setting the model as attribute.
         // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
         if (attrs instanceof BM) {
-            attrs = attrs.attributes;
+            attrs = _.clone(attrs.attributes);
         }
 
         attrs = this.formatAttributes(attrs, options);

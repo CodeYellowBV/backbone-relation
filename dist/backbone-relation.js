@@ -169,7 +169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // If a backbone model is given, use these attributes instead of setting the model as attribute.
 	        // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
 	        if (attrs instanceof BM) {
-	            attrs = attrs.attributes;
+	            attrs = _underscore2['default'].clone(attrs.attributes);
 	        }
 
 	        attrs = this.formatAttributes(attrs, options);

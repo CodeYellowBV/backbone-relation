@@ -1,3 +1,6 @@
+## 0.1.7
+- Fixed bug for double nested relation.
+
 ## 0.1.6
 - Add `formatAttributes` method where you can provide a custom formatter for attributes before setting.
 
