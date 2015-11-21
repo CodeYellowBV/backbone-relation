@@ -192,4 +192,17 @@
         });
         assert.deepEqual(mPost.get('writers').pluck('id'), [7, 8], 'blaatschaap.');
     });
+
+    QUnit.test('setting a related collection using an array', 2, function(assert) {
+        var mPost = new MPost();
+        var postData = {
+            writers: [
+                {id: 5, name: 'Burhan'},
+            ]
+        };
+
+        mPost.set(postData);
+        assert.equal(mPost.get('writers').length, 1, 'with a collection will add / remove models.');
+        assert.equal(postData.writers.length, 1, 'ensure that original array is intact');
+    });
 })();
