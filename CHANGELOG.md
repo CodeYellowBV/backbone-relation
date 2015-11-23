@@ -1,3 +1,6 @@
+## 0.1.8
+- Fixed bug which modified original set data.
+
 ## 0.1.7
 - Fixed bug for double nested relation.
 

@@ -87,7 +87,6 @@ export default Backbone.Model.extend({
     set(key, val, options) {
         const convertedAttributes = this.convertAttributes(key, val, options);
         let attrs = convertedAttributes.attrs;
-        let changes = [];
         let result = null;
 
         options = convertedAttributes.options;
@@ -105,9 +104,9 @@ export default Backbone.Model.extend({
         attrs = this.formatAttributes(attrs, options);
 
         // Find all related objects and call set on those objects.
-        changes = this.setRelated(attrs, options);
+        const relatedResult = this.setRelated(attrs, options);
 
-        result = BM.prototype.set.call(this, attrs, options);
+        result = BM.prototype.set.call(this, relatedResult.attributes, options);
 
         // This is a copy paste from Backbone.js codebase. Changes made
         // using setRelated should also be triggered higher up. It
@@ -116,8 +115,8 @@ export default Backbone.Model.extend({
         //
         // Trigger all relevant attribute changes.
         if (!options.silent) {
-            for (let i = 0, l = changes.length; i < l; i++) {
-                this.trigger('change:' + changes[i], this, this.get(changes[i]), options);
+            for (let i = 0, l = relatedResult.changes.length; i < l; i++) {
+                this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
             }
         }
 
@@ -138,13 +137,14 @@ export default Backbone.Model.extend({
      *
      * @param {Object} attributes
      * @param {Object} options
-     * @return {array} List of attribute keys which have changed.
+     * @return {Object} {changes: List of attribute keys which have changed, attributes: Attributes without those already processed and still must be set}
      */
     setRelated(attributes, options) {
         const getModuleFromRelations = function(relations, relation) {
             return relations[relation].module ? relations[relation].module : relations[relation];
         };
         const changes = [];
+        const omit = [];
 
         // Find attributes that map to a relation.
         _.each(_.intersection(_.keys(_.result(this, 'relations')), _.keys(attributes)), (relation) => {
@@ -169,12 +169,14 @@ export default Backbone.Model.extend({
                 // operation and let each type decide what to do with newValue.
                 this.setByModelOrCollection(currentValue, newValue, options);
                 changes.push(relation);
-
-                delete attributes[relation];
+                omit.push(relation);
             }
         });
 
-        return changes;
+        return {
+            changes,
+            attributes: _.omit(attributes, omit),
+        };
     },
     /**
      * Call set on the related object and let that object decide what to do.
