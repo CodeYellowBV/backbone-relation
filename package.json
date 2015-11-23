@@ -1,6 +1,6 @@
 {
   "name": "backbone-relation",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Simple support for relations for Backbone models",
   "author": "Burhan Zainuddin <burhan@codeyellow.nl>",
   "contributors": [

@@ -157,7 +157,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    set: function set(key, val, options) {
 	        var convertedAttributes = this.convertAttributes(key, val, options);
 	        var attrs = convertedAttributes.attrs;
-	        var changes = [];
 	        var result = null;
 
 	        options = convertedAttributes.options;
@@ -175,9 +174,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        attrs = this.formatAttributes(attrs, options);
 
 	        // Find all related objects and call set on those objects.
-	        changes = this.setRelated(attrs, options);
+	        var relatedResult = this.setRelated(attrs, options);
 
-	        result = BM.prototype.set.call(this, attrs, options);
+	        result = BM.prototype.set.call(this, relatedResult.attributes, options);
 
 	        // This is a copy paste from Backbone.js codebase. Changes made
 	        // using setRelated should also be triggered higher up. It
@@ -186,8 +185,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //
 	        // Trigger all relevant attribute changes.
 	        if (!options.silent) {
-	            for (var i = 0, l = changes.length; i < l; i++) {
-	                this.trigger('change:' + changes[i], this, this.get(changes[i]), options);
+	            for (var i = 0, l = relatedResult.changes.length; i < l; i++) {
+	                this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
 	            }
 	        }
 
@@ -209,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @param {Object} attributes
 	     * @param {Object} options
-	     * @return {array} List of attribute keys which have changed.
+	     * @return {Object} {changes: List of attribute keys which have changed, attributes: Attributes without those already processed and still must be set}
 	     */
 	    setRelated: function setRelated(attributes, options) {
 	        var _this2 = this;
@@ -218,6 +217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return relations[relation].module ? relations[relation].module : relations[relation];
 	        };
 	        var changes = [];
+	        var omit = [];
 
 	        // Find attributes that map to a relation.
 	        _underscore2['default'].each(_underscore2['default'].intersection(_underscore2['default'].keys(_underscore2['default'].result(this, 'relations')), _underscore2['default'].keys(attributes)), function (relation) {
@@ -242,12 +242,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // operation and let each type decide what to do with newValue.
 	                _this2.setByModelOrCollection(currentValue, newValue, options);
 	                changes.push(relation);
-
-	                delete attributes[relation];
+	                omit.push(relation);
 	            }
 	        });
 
-	        return changes;
+	        return {
+	            changes: changes,
+	            attributes: _underscore2['default'].omit(attributes, omit)
+	        };
 	    },
 	    /**
 	     * Call set on the related object and let that object decide what to do.
