@@ -240,7 +240,10 @@ export default Backbone.Model.extend({
         let result = this;
 
         _.some(keys, (anotherKey) => {
-            if (typeof result !== 'undefined' && typeof result.get === 'function') {
+            if (result === null || result === undefined) {
+                result = undefined;
+                return true;
+            } else if (typeof result.get === 'function') {
                 result = result.get(anotherKey);
             } else {
                 // Stop looping as soon as there is no result.

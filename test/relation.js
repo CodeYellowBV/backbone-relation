@@ -203,6 +203,15 @@
 
         mPost.set(postData);
         assert.equal(mPost.get('writers').length, 1, 'with a collection will add / remove models.');
-        assert.equal(postData.writers.length, 1, 'ensure that original array is intact');
+        assert.equal(postData.writers.length, 1, 'ensure that original array is intact.');
+    });
+
+    QUnit.test('dotting null value', 2, function(assert) {
+        var mPost = new MPost({
+            author: {id: 5, name: null},
+        });
+
+        assert.strictEqual(mPost.dot('author.name'), null, 'should return null.');
+        assert.strictEqual(mPost.dot('author.name.shouldBeUndefined'), undefined, 'should return undefined.');
     });
 })();

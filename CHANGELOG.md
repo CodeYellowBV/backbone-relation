@@ -1,3 +1,6 @@
+## 0.1.9
+- Fix bug dotting for null values.
+
 ## 0.1.8
 - Fixed bug which modified original set data.
 
