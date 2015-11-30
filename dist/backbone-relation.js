@@ -313,7 +313,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var result = this;
 
 	        _underscore2['default'].some(keys, function (anotherKey) {
-	            if (typeof result !== 'undefined' && typeof result.get === 'function') {
+	            if (result === null || result === undefined) {
+	                result = undefined;
+	                return true;
+	            } else if (typeof result.get === 'function') {
 	                result = result.get(anotherKey);
 	            } else {
 	                // Stop looping as soon as there is no result.
