@@ -140,26 +140,15 @@
         assert.strictEqual(mPost.dot(null), undefined, 'using a null value.');
     });
 
-  // QUnit.test('setting a related model', 5, function() {
-  //   var MPostProxy = MPost.extend({createRelations: false});
-  //   var mPost = new MPost();
-  //   var authorAttributes = {id: 5, name: 'Burhan Zainuddin'};
-  //   var mAuthor = new MAuthor({id: 6, name: 'AB Zainuddin'});
+    QUnit.test('setting a related model using an id', 2, function() {
+        var mPost = new MPost();
 
-  //   mPost.set('author', 5);
-  //   equal(mPost.get('author').get('id'), 5, 'with a scalar will set the id.');
+        mPost.set('author', 5);
+        equal(mPost.get('author').get('id'), 5, 'with a scalar will set the id.');
 
-  //   mPost.set('author', authorAttributes);
-  //   deepEqual(mPost.get('author').toJSON(), authorAttributes, 'with a hash will set the related model.');
-
-  //   mPost.set('author', mAuthor);
-  //   deepEqual(mPost.get('author').toJSON(), mAuthor.toJSON(), 'with a model will copy the attributes to the related model.');
-  //   ok(mPost.get('author') !== mAuthor, 'with a model will not overwrite the related model.');
-
-  //   mPost = new MPostProxy();
-  //   mPost.set('author', null);
-  //   ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
-  // });
+        mPost.set('author', null);
+        equal(mPost.get('author').get('id'), null, 'with a scalar will set the id.');
+    });
 
     QUnit.test('setting a related collection', 6, function(assert) {
         var mPost = new MPost();
