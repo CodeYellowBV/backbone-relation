@@ -1,3 +1,6 @@
+## 0.1.10
+- Setting scalar on model now sets id.
+
 ## 0.1.9
 - Fix bug dotting for null values.
 

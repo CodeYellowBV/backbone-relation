@@ -203,6 +203,12 @@ export default Backbone.Model.extend({
      * @param {mixed} options
      */
     setByModel(model, value, options) {
+        // Setting a scalar will be interpreted as settting the id.
+        if (value === undefined || value === null || typeof value === 'string' || typeof value === 'number') {
+            const result = {};
+            result[this.idAttribute] = value;
+            value = result;
+        }
         model.set(value, options);
     },
     /**
