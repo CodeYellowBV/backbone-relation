@@ -1,3 +1,6 @@
+## 0.1.11
+- Add current relation to options during setRelated.
+
 ## 0.1.10
 - Setting scalar on model now sets id.
 

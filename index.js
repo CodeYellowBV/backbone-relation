@@ -152,6 +152,9 @@ export default Backbone.Model.extend({
             const currentValue = this.get(relation);
             const constructor = getModuleFromRelations(_.result(this, 'relations'), relation);
 
+            // You may need to know which relation we're handeling right now.
+            options.relation = relation;
+
             // Create the relation if currentValue isn't the correct instance.
             // If it is, then call set on the relation.
             if (!(currentValue instanceof constructor)) {
