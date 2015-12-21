@@ -203,4 +203,32 @@
         assert.strictEqual(mPost.dot('author.name'), null, 'should return null.');
         assert.strictEqual(mPost.dot('author.name.shouldBeUndefined'), undefined, 'should return undefined.');
     });
+
+    QUnit.test('passing current relation in options in setRelated', 2, function(assert) {
+        var MPostOptions = MPost.extend({
+            setByModelOrCollection: function(currentValue, newValue, options) {
+                assert.equal(options.relation, 'author');
+                return MPost.prototype.setByModelOrCollection.call(this, currentValue, newValue, options);
+            }
+        });
+        var mPost = new MPostOptions();
+
+        mPost.set({author: {id: 5, name: 'Burhan'}});
+
+        mPost = new MPostOptions({author: {id: 5, name: 'Burhan'}});
+    });
+
+    QUnit.test('defining advanced relation', 1, function(assert) {
+        var MPostAdvanced = MPost.extend({
+            relations: {
+                author: {
+                    relationClass: MAuthor,
+                },
+            },
+        });
+        var mPost = new MPostAdvanced();
+
+        mPost.set({author: {id: 5, name: 'Burhan'}});
+        assert.equal(mPost.dot('author.name'), 'Burhan');
+    });
 })();

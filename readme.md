@@ -41,7 +41,7 @@ Example:
 var MAuthor = Model.extend({
     relations: {
         // Similar to posts, just another syntax. This supports more complex configuration options.
-        contacts: {constructor: CContact}
+        contacts: {relationClass: CContact}
     }
 })
 ```

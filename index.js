@@ -11,6 +11,10 @@ import Backbone from 'backbone';
 
 const BM = Backbone.Model;
 
+const getClass = function(relations, relation) {
+    return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
+};
+
 export default Backbone.Model.extend({
     /**
      * If true, create relations defined in the relations key.
@@ -34,12 +38,14 @@ export default Backbone.Model.extend({
             attrs || (attrs = {});
 
             // Create all relations for the first time.
-            _.each(relations, (MRelation, name) => {
+            _.each(relations, (props, name) => {
+                const MRelation = getClass(relations, name);
                 const mRelation = new MRelation();
 
                 // If you call Model.set() without attributes, Backbone will
                 // create an {undefined: undefined} attribute on your model.
                 if (attrs[name] !== undefined) {
+                    options.relation = name;
                     this.setByModelOrCollection(mRelation, attrs[name], options);
                 }
 
@@ -98,7 +104,7 @@ export default Backbone.Model.extend({
         // If a backbone model is given, use these attributes instead of setting the model as attribute.
         // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
         if (attrs instanceof BM) {
-            attrs = _.clone(attrs.attributes);
+            attrs = attrs.attributes;
         }
 
         attrs = this.formatAttributes(attrs, options);
@@ -140,9 +146,6 @@ export default Backbone.Model.extend({
      * @return {Object} {changes: List of attribute keys which have changed, attributes: Attributes without those already processed and still must be set}
      */
     setRelated(attributes, options) {
-        const getModuleFromRelations = function(relations, relation) {
-            return relations[relation].module ? relations[relation].module : relations[relation];
-        };
         const changes = [];
         const omit = [];
 
@@ -150,7 +153,7 @@ export default Backbone.Model.extend({
         _.each(_.intersection(_.keys(_.result(this, 'relations')), _.keys(attributes)), (relation) => {
             const newValue = attributes[relation];
             const currentValue = this.get(relation);
-            const constructor = getModuleFromRelations(_.result(this, 'relations'), relation);
+            const constructor = getClass(_.result(this, 'relations'), relation);
 
             // You may need to know which relation we're handeling right now.
             options.relation = relation;
@@ -222,7 +225,7 @@ export default Backbone.Model.extend({
      * @param {mixed} options
      */
     setByCollection(collection, value, options) {
-        if (value instanceof Backbone.Collection) {
+        if (value instanceof collection.constructor) {
             collection.set(value.models, options);
         } else {
             collection.set(value, options);
