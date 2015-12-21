@@ -79,6 +79,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var BM = _backbone2['default'].Model;
 
+	var getClass = function getClass(relations, relation) {
+	    return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
+	};
+
 	exports['default'] = _backbone2['default'].Model.extend({
 	    /**
 	     * If true, create relations defined in the relations key.
@@ -104,12 +108,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            attrs || (attrs = {});
 
 	            // Create all relations for the first time.
-	            _underscore2['default'].each(relations, function (MRelation, name) {
+	            _underscore2['default'].each(relations, function (props, name) {
+	                var MRelation = getClass(relations, name);
 	                var mRelation = new MRelation();
 
 	                // If you call Model.set() without attributes, Backbone will
 	                // create an {undefined: undefined} attribute on your model.
 	                if (attrs[name] !== undefined) {
+	                    options.relation = name;
 	                    _this.setByModelOrCollection(mRelation, attrs[name], options);
 	                }
 
@@ -168,7 +174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // If a backbone model is given, use these attributes instead of setting the model as attribute.
 	        // TODO: `attrs instanceof BM` is much better, but weirdly doesn't work in one of our projects yet.
 	        if (attrs instanceof BM) {
-	            attrs = _underscore2['default'].clone(attrs.attributes);
+	            attrs = attrs.attributes;
 	        }
 
 	        attrs = this.formatAttributes(attrs, options);
@@ -213,9 +219,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setRelated: function setRelated(attributes, options) {
 	        var _this2 = this;
 
-	        var getModuleFromRelations = function getModuleFromRelations(relations, relation) {
-	            return relations[relation].module ? relations[relation].module : relations[relation];
-	        };
 	        var changes = [];
 	        var omit = [];
 
@@ -223,7 +226,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _underscore2['default'].each(_underscore2['default'].intersection(_underscore2['default'].keys(_underscore2['default'].result(this, 'relations')), _underscore2['default'].keys(attributes)), function (relation) {
 	            var newValue = attributes[relation];
 	            var currentValue = _this2.get(relation);
-	            var constructor = getModuleFromRelations(_underscore2['default'].result(_this2, 'relations'), relation);
+	            var constructor = getClass(_underscore2['default'].result(_this2, 'relations'), relation);
 
 	            // You may need to know which relation we're handeling right now.
 	            options.relation = relation;
@@ -295,7 +298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {mixed} options
 	     */
 	    setByCollection: function setByCollection(collection, value, options) {
-	        if (value instanceof _backbone2['default'].Collection) {
+	        if (value instanceof collection.constructor) {
 	            collection.set(value.models, options);
 	        } else {
 	            collection.set(value, options);
