@@ -1,3 +1,6 @@
+## 0.2.1
+- Don't use toJSON for copying model attributes, it might translate the attributes incorrectly.
+
 ## 0.1.11
 - Add current relation to options during setRelated.
 

@@ -32,7 +32,10 @@ export default Backbone.Model.extend({
         options || (options = {});
         const createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
         const relations = _.result(this, 'relations');
-        let attrs = attributes instanceof BM ? attributes.toJSON() : attributes;
+
+        // We take attributes directly, because a toJSON call might translate
+        // the model's attributes...
+        let attrs = attributes instanceof BM ? attributes.attributes : attributes;
 
         if (createRelations && !_.isEmpty(relations)) {
             attrs || (attrs = {});
