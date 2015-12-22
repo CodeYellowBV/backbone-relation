@@ -1,6 +1,6 @@
 {
   "name": "backbone-relation",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simple support for relations for Backbone models",
   "author": "Burhan Zainuddin <burhan@codeyellow.nl>",
   "contributors": [
@@ -38,8 +38,10 @@
     "codeyellow-style": "git+https://bitbucket.org/codeyellow/codeyellow-style.git#v0.2.0",
     "eslint": "1.10.3"
   },
-  "babel" : {
-    "presets": ["es2015"]
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "scripts": {
     "lint": "eslint index.js",

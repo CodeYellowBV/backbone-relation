@@ -54,20 +54,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	Object.defineProperty(exports, '__esModule', {
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	/**
-	 * Override the constructor to perhaps create the relations if `createRelations`
-	 * is set to true.
-	 *
-	 * @param {[type]} key     [description]
-	 * @param {[type]} val     [description]
-	 * @param {[type]} options [description]
-	 */
 
 	var _underscore = __webpack_require__(1);
 
@@ -77,13 +68,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
-	var BM = _backbone2['default'].Model;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; } /**
+	                                                                                                                              * Override the constructor to perhaps create the relations if `createRelations`
+	                                                                                                                              * is set to true.
+	                                                                                                                              *
+	                                                                                                                              * @param {[type]} key     [description]
+	                                                                                                                              * @param {[type]} val     [description]
+	                                                                                                                              * @param {[type]} options [description]
+	                                                                                                                              */
+
+	var BM = _backbone2.default.Model;
 
 	var getClass = function getClass(relations, relation) {
 	    return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
 	};
 
-	exports['default'] = _backbone2['default'].Model.extend({
+	exports.default = _backbone2.default.Model.extend({
 	    /**
 	     * If true, create relations defined in the relations key.
 	     *
@@ -101,14 +103,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        options || (options = {});
 	        var createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
-	        var relations = _underscore2['default'].result(this, 'relations');
-	        var attrs = attributes instanceof BM ? attributes.toJSON() : attributes;
+	        var relations = _underscore2.default.result(this, 'relations');
 
-	        if (createRelations && !_underscore2['default'].isEmpty(relations)) {
+	        // We take attributes directly, because a toJSON call might translate
+	        // the model's attributes...
+	        var attrs = attributes instanceof BM ? attributes.attributes : attributes;
+
+	        if (createRelations && !_underscore2.default.isEmpty(relations)) {
 	            attrs || (attrs = {});
 
 	            // Create all relations for the first time.
-	            _underscore2['default'].each(relations, function (props, name) {
+	            _underscore2.default.each(relations, function (props, name) {
 	                var MRelation = getClass(relations, name);
 	                var mRelation = new MRelation();
 
@@ -143,7 +148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (key === null) return this;
 
 	        // Handle both `"key", value` and `{key: value}` -style arguments.
-	        if (typeof key === 'object') {
+	        if ((typeof key === 'undefined' ? 'undefined' : _typeof(key)) === 'object') {
 	            attrs = key;
 	            options = val;
 	        } else {
@@ -155,6 +160,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            options: options
 	        };
 	    },
+
 	    /**
 	     * Override default set to take into account the relations that are defined.
 	     * It should not be possible to overwrite an existing relation with another
@@ -198,6 +204,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return result;
 	    },
+
 	    /**
 	     * Format attributes before setting.
 	     *
@@ -209,6 +216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // eslint-disable-line no-unused-vars
 	        return attrs;
 	    },
+
 	    /**
 	     * Find attributes that map to a related object and call set on that object.
 	     *
@@ -223,10 +231,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var omit = [];
 
 	        // Find attributes that map to a relation.
-	        _underscore2['default'].each(_underscore2['default'].intersection(_underscore2['default'].keys(_underscore2['default'].result(this, 'relations')), _underscore2['default'].keys(attributes)), function (relation) {
+	        _underscore2.default.each(_underscore2.default.intersection(_underscore2.default.keys(_underscore2.default.result(this, 'relations')), _underscore2.default.keys(attributes)), function (relation) {
 	            var newValue = attributes[relation];
 	            var currentValue = _this2.get(relation);
-	            var constructor = getClass(_underscore2['default'].result(_this2, 'relations'), relation);
+	            var constructor = getClass(_underscore2.default.result(_this2, 'relations'), relation);
 
 	            // You may need to know which relation we're handeling right now.
 	            options.relation = relation;
@@ -254,9 +262,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return {
 	            changes: changes,
-	            attributes: _underscore2['default'].omit(attributes, omit)
+	            attributes: _underscore2.default.omit(attributes, omit)
 	        };
 	    },
+
 	    /**
 	     * Call set on the related object and let that object decide what to do.
 	     *
@@ -267,12 +276,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setByModelOrCollection: function setByModelOrCollection(relation, value, options) {
 	        if (relation instanceof BM) {
 	            this.setByModel(relation, value, options);
-	        } else if (relation instanceof _backbone2['default'].Collection) {
+	        } else if (relation instanceof _backbone2.default.Collection) {
 	            this.setByCollection(relation, value, options);
 	        } else {
 	            throw new Error('Relation is not a model or collection?');
 	        }
 	    },
+
 	    /**
 	     * Set a value to a model. Here you can format the value before setting it
 	     * to the model.
@@ -290,6 +300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        model.set(value, options);
 	    },
+
 	    /**
 	     * Similar to setByModel, but for a Collection.
 	     *
@@ -304,12 +315,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            collection.set(value, options);
 	        }
 	    },
+
 	    /**
 	     * Create a new instance of relation.
 	     */
 	    createRelated: function createRelated(relation, val, constructor, options) {
 	        return new constructor(val, options);
 	    },
+
 	    /**
 	    * Shorthand for getting nested attributes.
 	    *
@@ -324,7 +337,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var keys = key.trim('.').split('.');
 	        var result = this;
 
-	        _underscore2['default'].some(keys, function (anotherKey) {
+	        _underscore2.default.some(keys, function (anotherKey) {
 	            if (result === null || result === undefined) {
 	                result = undefined;
 	                return true;
@@ -343,7 +356,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return result;
 	    }
 	});
-	module.exports = exports['default'];
 
 /***/ },
 /* 1 */
