@@ -15,7 +15,7 @@ const getClass = function(relations, relation) {
     return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
 };
 
-export default Backbone.Model.extend({
+module.exports = Backbone.Model.extend({
     /**
      * If true, create relations defined in the relations key.
      *
