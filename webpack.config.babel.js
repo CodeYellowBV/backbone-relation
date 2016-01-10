@@ -7,6 +7,7 @@ export default {
         filename: 'backbone-relation.js',
         library: 'backbone-relation',
         libraryTarget: 'umd',
+        umdNamedDefine: true,
     },
     module: {
         loaders: [
