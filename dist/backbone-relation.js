@@ -2,7 +2,7 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("underscore"), require("backbone"));
 	else if(typeof define === 'function' && define.amd)
-		define(["underscore", "backbone"], factory);
+		define("backbone-relation", ["underscore", "backbone"], factory);
 	else if(typeof exports === 'object')
 		exports["backbone-relation"] = factory(require("underscore"), require("backbone"));
 	else
@@ -144,8 +144,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    convertAttributes: function convertAttributes(key, val, options) {
 	        var attrs = {};
-
-	        if (key === null) return this;
 
 	        // Handle both `"key", value` and `{key: value}` -style arguments.
 	        if ((typeof key === 'undefined' ? 'undefined' : _typeof(key)) === 'object') {
@@ -338,20 +336,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var result = this;
 
 	        _underscore2.default.some(keys, function (anotherKey) {
-	            if (result === null || result === undefined) {
-	                result = undefined;
-	                return true;
-	            } else if (typeof result.get === 'function') {
+	            if (result && typeof result.get === 'function') {
 	                result = result.get(anotherKey);
 	            } else {
-	                // Stop looping as soon as there is no result.
+	                result = undefined;
 	                return true;
 	            }
 	        });
-
-	        if (result === this) {
-	            return undefined;
-	        }
 
 	        return result;
 	    }
