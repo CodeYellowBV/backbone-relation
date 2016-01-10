@@ -24,6 +24,7 @@ module.exports = function(config) {
         plugins: [
             'karma-qunit',
             'karma-phantomjs-launcher',
+            'karma-babel-preprocessor',
             'karma-coverage',
         ],
 
@@ -35,6 +36,7 @@ module.exports = function(config) {
         preprocessors: {
             // files that should show up in the coverage report
             'dist/*.js': ['coverage'],
+            'test/**/*.js': ['babel'],
         },
 
         // web server port
