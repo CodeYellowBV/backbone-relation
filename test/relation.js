@@ -90,6 +90,15 @@
         assert.ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
     });
 
+    QUnit.test('do nothing when setting a null key', 2, function(assert) {
+        var mAuthor = new MAuthor({id: 1});
+
+        mAuthor.set(null);
+        assert.deepEqual(mAuthor.attributes, {id: 1});
+        mAuthor.set(null, 2);
+        assert.deepEqual(mAuthor.attributes, {id: 1});
+    });
+
     QUnit.test('setting a related model', 4, function(assert) {
         var MPostProxy = MPost.extend({createRelations: false});
         var mPost = new MPost();

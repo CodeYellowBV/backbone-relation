@@ -73,8 +73,6 @@ export default Backbone.Model.extend({
     convertAttributes(key, val, options) {
         let attrs = {};
 
-        if (key === null) return this;
-
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (typeof key === 'object') {
             attrs = key;
