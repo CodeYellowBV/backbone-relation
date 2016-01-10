@@ -140,14 +140,21 @@
         assert.strictEqual(mPost.dot(null), undefined, 'using a null value.');
     });
 
-    QUnit.test('setting a related model using an id', 2, function() {
+    QUnit.test('setting a related model using an id', 2, function(assert) {
         var mPost = new MPost();
 
         mPost.set('author', 5);
-        equal(mPost.get('author').get('id'), 5, 'with a scalar will set the id.');
+        assert.equal(mPost.get('author').get('id'), 5, 'with a scalar will set the id.');
 
         mPost.set('author', null);
-        equal(mPost.get('author').get('id'), null, 'with a scalar will set the id.');
+        assert.equal(mPost.get('author').get('id'), null, 'with a scalar will set the id.');
+    });
+
+    QUnit.test('instantiate a model with an existing model', 1, function(assert) {
+        var mPost = new MPost({id: 10});
+        var mPost2 = new MPost(mPost);
+
+        assert.equal(mPost2.get('id'), 10);
     });
 
     QUnit.test('setting a related collection', 6, function(assert) {
