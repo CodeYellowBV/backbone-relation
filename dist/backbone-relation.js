@@ -56,10 +56,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
 	var _underscore = __webpack_require__(1);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
@@ -85,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
 	};
 
-	exports.default = _backbone2.default.Model.extend({
+	module.exports = _backbone2.default.Model.extend({
 	    /**
 	     * If true, create relations defined in the relations key.
 	     *
