@@ -1,5 +1,7 @@
 # backbone-relation
 
+[![Build Status](https://travis-ci.org/CodeYellowBV/backbone-relation.svg?branch=master)](https://travis-ci.org/CodeYellowBV/backbone-relation)
+
 Backbone does not support relations by default. This is a simple package that adds relations to Backbone.
 
 The idea is simple: you can define relations like you define defaults. A relation can be either a Model or a Collection and attributes can be set recursively through the parent.
