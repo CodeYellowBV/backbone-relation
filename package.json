@@ -33,6 +33,7 @@
     "babel-loader": "6.2.1",
     "babel-preset-es2015": "^6.3.13",
     "codeyellow-style": "git+https://bitbucket.org/codeyellow/codeyellow-style.git#v0.2.0",
+    "coveralls": "^2.11.6",
     "eslint": "1.10.3",
     "istanbul": "^0.4.2",
     "karma-babel-preprocessor": "^6.0.1",

@@ -10,5 +10,8 @@ install:
 before_script:
   - npm run deps
 
+after_script:
+  - cat coverage/report-lcov/lcov.info | node_modules/.bin/coveralls
+
 script:
   - npm test

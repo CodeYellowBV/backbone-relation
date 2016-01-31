@@ -1,6 +1,7 @@
 # backbone-relation
 
 [![Build Status](https://travis-ci.org/CodeYellowBV/backbone-relation.svg?branch=master)](https://travis-ci.org/CodeYellowBV/backbone-relation)
+[![Coverage Status](https://coveralls.io/repos/github/CodeYellowBV/backbone-relation/badge.svg?branch=master)](https://coveralls.io/github/CodeYellowBV/backbone-relation?branch=master)
 
 Backbone does not support relations by default. This is a simple package that adds relations to Backbone.
 

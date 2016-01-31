@@ -39,6 +39,13 @@ module.exports = function(config) {
             'test/**/*.js': ['babel'],
         },
 
+        coverageReporter: {
+            reporters: [
+                { type: 'html', subdir: 'report-html' },
+                { type: 'lcov', subdir: 'report-lcov' },
+            ],
+        },
+
         // web server port
         port: 9877,
 
