@@ -10,6 +10,61 @@ The idea is simple: you can define relations like you define defaults. A relatio
 Why use this over [backbone-relational](http://backbonerelational.org/)?
 We found backbone-relational too complex. Itʼs basically an ORM in the frontend. We didnʼt need that, hence this package.
 
+## Vision
+
+- 100% compatible with original Backbone codebase. All Backbone test must pass when tested using backbone-relation.
+- Extend Backbone, don't patch it.
+- Make it clear. Only add well defined and tested features, leaving as little as possible open to interpretation.
+
+## Use case
+
+Imagine an API-endpoint gives the following response when hitting `api/user/1`:
+
+```
+{
+    id: 1,
+    username: 'witchhunter',
+    profile: {
+        id: 7,
+        first_name: 'Michelle',
+        last_name: 'Velvet'
+    }
+}
+```
+
+You can define 2 models, one called `MProfile` and the other `MUser`:
+
+```
+MProfile = MRelation.extend();
+
+MUser = MRelation.extend({
+    relations: {
+        profile: MProfile
+    }
+})
+```
+
+Now you can do a fetch and the profile model will be filled with data on the user model:
+
+```
+mUser = new MUser({id: 1});
+mUser.fetch();
+
+... 
+
+mUser.get('profile').get('first_name'); // 'Michelle'
+```
+
+When setting data, you can do the following:
+
+```
+mUser.set({
+    profile: {first_name: 'Vera'}
+});
+
+mUser.get('profile').get('first_name'); // 'Vera'
+```
+
 ## Defining relations
 
 You can define relations using the `relations` attribute. It can either be a hash or a function that returns a hash. There are a few different ways to define relations:
@@ -36,7 +91,7 @@ With this form you can add a bit more configuration options. These are the optio
 
 | Key | Description |
 | --- | ----------- |
-| `constructor` | The constructor for the relation. This can either be a `Backbone.Model` or a `Backbone.Collection`.
+| `relationClass` | The constructor for the relation. This can either be a `Backbone.Model` or a `Backbone.Collection`.
 
 Example:
 
@@ -72,6 +127,8 @@ This implies that once a relation is set, it cannot be overridden with another v
 mAuthor.unset('user');
 mAuthor.set('user', mUser);
 ```
+
+Bottom line: if a relation exists, `set` is proxied. 
 
 ## Getting related data
 
@@ -131,3 +188,9 @@ Itʼs not possible to retrieve attributes with a `.` in the name. You can use `g
 ```js
 model.dot('nestedModel1.nestedCollection2.nestedIdOfModel3').get('foo.bar');
 ```
+
+## Options
+
+| Key | Default | Description |
+| --- | ------- | ----------- |
+| createRelations | `true` |  `true`: create relations while initializing model. `false`: skip creating relations upon initialization. NOTE: when using `set`, this option is ignored. Relations will always be intialized when using set. |
