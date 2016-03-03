@@ -56,6 +56,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /**
+	                                                                                                                                                                                                                                                   * Override the constructor to perhaps create the relations if `createRelations`
+	                                                                                                                                                                                                                                                   * is set to true.
+	                                                                                                                                                                                                                                                   *
+	                                                                                                                                                                                                                                                   * @param {[type]} key     [description]
+	                                                                                                                                                                                                                                                   * @param {[type]} val     [description]
+	                                                                                                                                                                                                                                                   * @param {[type]} options [description]
+	                                                                                                                                                                                                                                                   */
+
+
 	var _underscore = __webpack_require__(1);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
@@ -66,15 +76,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; } /**
-	                                                                                                                              * Override the constructor to perhaps create the relations if `createRelations`
-	                                                                                                                              * is set to true.
-	                                                                                                                              *
-	                                                                                                                              * @param {[type]} key     [description]
-	                                                                                                                              * @param {[type]} val     [description]
-	                                                                                                                              * @param {[type]} options [description]
-	                                                                                                                              */
-
 	var BM = _backbone2.default.Model;
 
 	var getClass = function getClass(relations, relation) {
@@ -82,6 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	module.exports = _backbone2.default.Model.extend({
+	    triggerChangeCount: 0,
 	    /**
 	     * If true, create relations defined in the relations key.
 	     *
@@ -124,8 +126,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 
+	        // Listen to main change events, and increment counter.
+	        this.on('change', function () {
+	            return _this.triggerChangeCount++;
+	        });
+
 	        return BM.call(this, attrs, options);
 	    },
+	    resetTriggerChangeCount: function resetTriggerChangeCount() {
+	        this.triggerChangeCount = 0;
+	    },
+	    getTriggerChangeCount: function getTriggerChangeCount() {
+	        return this.triggerChangeCount;
+	    },
+
 	    /**
 	     * Convert (key, value, options) to {attrs: attrs, options: options}.
 	     *
@@ -165,6 +179,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var attrs = convertedAttributes.attrs;
 	        var result = null;
 
+	        this.resetTriggerChangeCount();
+
 	        options = convertedAttributes.options;
 
 	        if (!options) {
@@ -193,6 +209,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!options.silent) {
 	            for (var i = 0, l = relatedResult.changes.length; i < l; i++) {
 	                this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
+	            }
+
+	            // Trigger main change event. Some libraries / user code depend on
+	            // this, like Backbone.VirtualCollection.
+	            if (relatedResult.changes.length > 0 && this.getTriggerChangeCount() === 0) {
+	                this.trigger('change', this, options);
 	            }
 	        }
 
