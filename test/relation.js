@@ -244,4 +244,23 @@
         mPost.set({ author: { id: 5, name: 'Burhan' } });
         assert.equal(mPost.dot('author.name'), 'Burhan');
     });
+
+    QUnit.test('a change on a relation should trigger a change', 1, function(assert) {
+        const mPost = new MPost();
+        let cnt = 0;
+
+        // Poor mans spy.
+        mPost.trigger = (function(parent) {
+            return function() {
+                if (arguments[0] === 'change') {
+                    cnt++;
+                }
+
+                return parent.apply(this, arguments);
+            };
+        })(mPost.trigger);
+
+        mPost.set({ author: { id: 5, name: 'Burhan' } }, { burhan: true });
+        assert.equal(cnt, 1);
+    });
 })();

@@ -16,6 +16,7 @@ const getClass = function(relations, relation) {
 };
 
 module.exports = Backbone.Model.extend({
+    triggerChangeCount: 0,
     /**
      * If true, create relations defined in the relations key.
      *
@@ -56,7 +57,16 @@ module.exports = Backbone.Model.extend({
             });
         }
 
+        // Listen to main change events, and increment counter.
+        this.on('change', () => this.triggerChangeCount++);
+
         return BM.call(this, attrs, options);
+    },
+    resetTriggerChangeCount() {
+        this.triggerChangeCount = 0;
+    },
+    getTriggerChangeCount() {
+        return this.triggerChangeCount;
     },
     /**
      * Convert (key, value, options) to {attrs: attrs, options: options}.
@@ -96,6 +106,8 @@ module.exports = Backbone.Model.extend({
         let attrs = convertedAttributes.attrs;
         let result = null;
 
+        this.resetTriggerChangeCount();
+
         options = convertedAttributes.options;
 
         if (!options) {
@@ -124,6 +136,12 @@ module.exports = Backbone.Model.extend({
         if (!options.silent) {
             for (let i = 0, l = relatedResult.changes.length; i < l; i++) {
                 this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
+            }
+
+            // Trigger main change event. Some libraries / user code depend on
+            // this, like Backbone.VirtualCollection.
+            if (relatedResult.changes.length > 0 && this.getTriggerChangeCount() === 0) {
+                this.trigger('change', this, options);
             }
         }
 

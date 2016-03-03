@@ -1,3 +1,6 @@
+## 0.2.2
+- Trigger change event if a relation is changed.
+
 ## 0.2.1
 - Don't use toJSON for copying model attributes, it might translate the attributes incorrectly.
 
