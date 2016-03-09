@@ -24,6 +24,9 @@
   ],
   "license": "ISC",
   "main": "dist/backbone-relation.js",
+  "files": [
+    "dist/**"
+  ],
   "dependencies": {
     "backbone": "1.0.0 - 1.2.3",
     "underscore": "1.4.4 - 1.8.3"
@@ -39,11 +42,6 @@
     "karma-babel-preprocessor": "^6.0.1",
     "karma-coverage": "^0.5.2",
     "webpack": "^1.12.2"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
   },
   "scripts": {
     "lint": "eslint index.js test && echo 'Linting succeeded.'",
