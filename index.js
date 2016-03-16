@@ -11,7 +11,7 @@ import Backbone from 'backbone';
 
 const BM = Backbone.Model;
 
-const getClass = function(relations, relation) {
+const getClass = function (relations, relation) {
     return relations[relation].relationClass ? relations[relation].relationClass : relations[relation];
 };
 
@@ -135,7 +135,7 @@ module.exports = Backbone.Model.extend({
         // Trigger all relevant attribute changes.
         if (!options.silent) {
             for (let i = 0, l = relatedResult.changes.length; i < l; i++) {
-                this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
+                this.trigger(`change:${relatedResult.changes[i]}`, this, this.get(relatedResult.changes[i]), options);
             }
 
             // Trigger main change event. Some libraries / user code depend on
@@ -273,10 +273,10 @@ module.exports = Backbone.Model.extend({
         _.some(keys, (anotherKey) => {
             if (result && typeof result.get === 'function') {
                 result = result.get(anotherKey);
-            } else {
-                result = undefined;
-                return true;
+                return false;
             }
+            result = undefined;
+            return true;
         });
 
         return result;
