@@ -56,6 +56,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /**
+	                                                                                                                                                                                                                                                   * Override the constructor to perhaps create the relations if `createRelations`
+	                                                                                                                                                                                                                                                   * is set to true.
+	                                                                                                                                                                                                                                                   *
+	                                                                                                                                                                                                                                                   * @param {[type]} key     [description]
+	                                                                                                                                                                                                                                                   * @param {[type]} val     [description]
+	                                                                                                                                                                                                                                                   * @param {[type]} options [description]
+	                                                                                                                                                                                                                                                   */
+
+
 	var _underscore = __webpack_require__(1);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
@@ -65,15 +75,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _backbone2 = _interopRequireDefault(_backbone);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; } /**
-	                                                                                                                              * Override the constructor to perhaps create the relations if `createRelations`
-	                                                                                                                              * is set to true.
-	                                                                                                                              *
-	                                                                                                                              * @param {[type]} key     [description]
-	                                                                                                                              * @param {[type]} val     [description]
-	                                                                                                                              * @param {[type]} options [description]
-	                                                                                                                              */
 
 	var BM = _backbone2.default.Model;
 
@@ -355,10 +356,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _underscore2.default.some(keys, function (anotherKey) {
 	            if (result && typeof result.get === 'function') {
 	                result = result.get(anotherKey);
-	            } else {
-	                result = undefined;
-	                return true;
+	                return false;
 	            }
+	            result = undefined;
+	            return true;
 	        });
 
 	        return result;
