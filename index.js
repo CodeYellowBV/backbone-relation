@@ -31,14 +31,16 @@ export default Backbone.Model.extend({
     relations: {},
     constructor: function Constructor(attributes, options) {
         options || (options = {});
-        const createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
+        if (typeof options.createRelations !== 'undefined') {
+            this.createRelations = options.createRelations;
+        }
         const relations = _.result(this, 'relations');
 
         // We take attributes directly, because a toJSON call might translate
         // the model's attributes...
         let attrs = attributes instanceof BM ? attributes.attributes : attributes;
 
-        if (createRelations && !_.isEmpty(relations)) {
+        if (this.createRelations && !_.isEmpty(relations)) {
             attrs || (attrs = {});
 
             // Create all relations for the first time.
@@ -167,6 +169,10 @@ export default Backbone.Model.extend({
     setRelated(attributes, options) {
         const changes = [];
         const omit = [];
+
+        options = _.extend({
+            createRelations: this.createRelations,
+        }, options || {});
 
         // Find attributes that map to a relation.
         _.each(_.intersection(_.keys(_.result(this, 'relations')), _.keys(attributes)), (relation) => {
