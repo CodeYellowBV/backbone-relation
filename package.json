@@ -25,6 +25,7 @@
   "license": "ISC",
   "main": "dist/backbone-relation.js",
   "files": [
+    "test/*.js",
     "dist/**"
   ],
   "dependencies": {
