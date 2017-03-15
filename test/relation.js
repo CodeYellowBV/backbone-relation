@@ -113,7 +113,7 @@ QUnit.test('setting a related model', 4, (assert) => {
     assert.deepEqual(mPost.get('author').toJSON(), authorAttributes, 'using a hash.');
 
     mPost = new MPostProxy();
-    mPost.set('author', null);
+    mPost.set('author', null, { createRelations: true });
     assert.ok(mPost.get('author') instanceof MAuthor, 'will create that relation if not created before.');
 });
 
@@ -242,6 +242,137 @@ QUnit.test('defining advanced relation', 1, (assert) => {
 
     mPost.set({ author: { id: 5, name: 'Burhan' } });
     assert.equal(mPost.dot('author.name'), 'Burhan');
+});
+
+QUnit.test('related models should not be instantiated if createRelations=false', 1, (assert) => {
+    const MGrandParent = Backbone.Model.extend();
+    const MParent = Backbone.Model.extend({
+        relations: {
+            grandParent: MGrandParent,
+        },
+    });
+    const MChild = Backbone.Model.extend({
+        relations: {
+            parent: MParent,
+        },
+    });
+
+    const mChild = new MChild(null, { createRelations: false });
+    assert.strictEqual(mChild.dot('parent'), undefined);
+});
+
+QUnit.test('createRelations option should be inherit', 4, (assert) => {
+    const MGrandParent = Backbone.Model.extend();
+    const MParent = Backbone.Model.extend({
+        relations: {
+            grandParent: MGrandParent,
+        },
+    });
+    const MChild = Backbone.Model.extend({
+        relations: {
+            parent: MParent,
+        },
+    });
+
+    const mChild = new MChild(null, { createRelations: false });
+    assert.strictEqual(mChild.dot('parent'), undefined);
+
+    mChild.set({ parent: { grandParent: 1 } }, { createRelations: false });
+    assert.deepEqual(mChild.dot('parent'), { grandParent: 1 });
+
+    // When no option is set, createRelations should be inherit from the model,
+    // which is false.
+    mChild.set({ parent: { grandParent: 2 } });
+    assert.deepEqual(mChild.dot('parent'), { grandParent: 2 });
+
+    mChild.set({ parent: { grandParent: 3 } }, { createRelations: true });
+    assert.ok(mChild.dot('parent.grandParent') instanceof MGrandParent);
+});
+
+QUnit.test('should not crash on circular models with createRelations=false', 2, (assert) => {
+    const MCircular = Backbone.Model.extend({
+        relations() {
+            return {
+                prop: MCircular,
+            };
+        },
+    });
+    const mCircular = new MCircular(null, { createRelations: false });
+    assert.strictEqual(mCircular.get('prop'), undefined);
+
+    mCircular.set({ prop: 456 });
+    assert.strictEqual(mCircular.get('prop'), 456);
+});
+
+// Skipped because test fails, see NOTE_BAD_LOGIC.
+QUnit.test('should not crash on circular models with default values and createRelations=false', 2, (assert) => {
+    const MCircular = Backbone.Model.extend({
+        defaults: {
+            prop: 123,
+        },
+        relations() {
+            return {
+                prop: MCircular,
+            };
+        },
+    });
+    const mCircular = new MCircular(null, { createRelations: false });
+    assert.equal(mCircular.get('prop'), 123);
+
+    mCircular.set({ prop: 456 });
+    assert.equal(mCircular.get('prop'), 456);
+});
+
+QUnit.test('circular models with createRelations=true cannot be created', 1, (assert) => {
+    const MCircular = Backbone.Model.extend({
+        relations() {
+            return {
+                prop: MCircular,
+            };
+        },
+    });
+    assert.throws(() => {
+        // eslint-disable-next-line no-new
+        new MCircular(null, { createRelations: true });
+    }, 'A model with a circular dependency cannot be instantiated with createRelations=true');
+});
+
+QUnit.test('circular models cannot be assigned a value with createRelations=true', 3, (assert) => {
+    const MCircular = Backbone.Model.extend({
+        relations() {
+            return {
+                prop: MCircular,
+            };
+        },
+    });
+    const mCircular = new MCircular(null, { createRelations: false });
+    assert.strictEqual(mCircular.get('prop'), undefined);
+    assert.throws(() => {
+        mCircular.set({ prop: 789 }, { createRelations: true });
+    }, '.set with createRelations=true on a circular model should throw');
+
+    assert.strictEqual(mCircular.get('prop'), undefined);
+});
+
+// Skipped because test fails, see NOTE_BAD_LOGIC.
+QUnit.test('circular models with default attributes cannot be assigned a value with createRelations=true', 3, (assert) => {
+    const MCircular = Backbone.Model.extend({
+        defaults: {
+            prop: 567,
+        },
+        relations() {
+            return {
+                prop: MCircular,
+            };
+        },
+    });
+    const mCircular = new MCircular(null, { createRelations: false });
+    assert.equal(mCircular.get('prop'), 567);
+    assert.throws(() => {
+        mCircular.set({ prop: 789 }, { createRelations: true });
+    }, '.set with createRelations=true on a circular model should throw');
+
+    assert.equal(mCircular.get('prop'), 567);
 });
 
 QUnit.test('a change on a relation should trigger a change', 1, (assert) => {
