@@ -41,14 +41,16 @@ var index = Backbone.Model.extend({
         var _this = this;
 
         options || (options = {});
-        var createRelations = options.createRelations !== undefined ? options.createRelations : this.createRelations;
+        if (typeof options.createRelations !== 'undefined') {
+            this.createRelations = options.createRelations;
+        }
         var relations = _.result(this, 'relations');
 
         // We take attributes directly, because a toJSON call might translate
         // the model's attributes...
         var attrs = attributes instanceof BM ? attributes.attributes : attributes;
 
-        if (createRelations && !_.isEmpty(relations)) {
+        if (this.createRelations && !_.isEmpty(relations)) {
             attrs || (attrs = {});
 
             // Create all relations for the first time.
@@ -187,6 +189,10 @@ var index = Backbone.Model.extend({
         var changes = [];
         var omit = [];
 
+        options = _.extend({
+            createRelations: this.createRelations
+        }, options || {});
+
         // Find attributes that map to a relation.
         _.each(_.intersection(_.keys(_.result(this, 'relations')), _.keys(attributes)), function (relation) {
             var newValue = attributes[relation];
@@ -201,7 +207,7 @@ var index = Backbone.Model.extend({
             if (!(currentValue instanceof constructor)) {
                 // If the current relation is not defined and a correct instance
                 // is given, set that instance directly.
-                if (newValue instanceof constructor) {
+                if (newValue instanceof constructor || !options.createRelations) {
                     attributes[relation] = newValue;
                 } else {
                     attributes[relation] = _this2.createRelated(relation, newValue, constructor, options);
