@@ -188,7 +188,7 @@ export default Backbone.Model.extend({
             if (!(currentValue instanceof constructor)) {
                 // If the current relation is not defined and a correct instance
                 // is given, set that instance directly.
-                if (newValue instanceof constructor) {
+                if (newValue instanceof constructor || !options.createRelations) {
                     attributes[relation] = newValue;
                 } else {
                     attributes[relation] = this.createRelated(relation, newValue, constructor, options);

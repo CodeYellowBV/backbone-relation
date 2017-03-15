@@ -193,4 +193,4 @@ model.dot('nestedModel1.nestedCollection2.nestedIdOfModel3').get('foo.bar');
 
 | Key | Default | Description |
 | --- | ------- | ----------- |
-| createRelations | `true` |  `true`: create relations while initializing model. `false`: skip creating relations upon initialization. NOTE: when using `set`, this option is ignored. Relations will always be intialized when using set. |
+| createRelations | `true` |  `true`: create relations while initializing model. `false`: skip creating relations upon initialization. |
