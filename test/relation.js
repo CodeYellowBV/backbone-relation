@@ -382,7 +382,7 @@ QUnit.test('a change on a relation should trigger a change', 1, (assert) => {
     function spy(parent) {
         return function (...args) {
             if (args[0] === 'change') {
-                cnt++;
+                cnt += 1;
             }
 
             return parent.apply(this, args);

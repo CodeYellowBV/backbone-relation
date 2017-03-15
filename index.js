@@ -60,7 +60,7 @@ export default Backbone.Model.extend({
         }
 
         // Listen to main change events, and increment counter.
-        this.on('change', () => this.triggerChangeCount++);
+        this.on('change', () => (this.triggerChangeCount += 1));
 
         return BM.call(this, attrs, options);
     },
@@ -136,7 +136,7 @@ export default Backbone.Model.extend({
         //
         // Trigger all relevant attribute changes.
         if (!options.silent) {
-            for (let i = 0, l = relatedResult.changes.length; i < l; i++) {
+            for (let i = 0, l = relatedResult.changes.length; i < l; i += 1) {
                 this.trigger(`change:${relatedResult.changes[i]}`, this, this.get(relatedResult.changes[i]), options);
             }
 

@@ -71,7 +71,7 @@ var index = Backbone.Model.extend({
 
         // Listen to main change events, and increment counter.
         this.on('change', function () {
-            return _this.triggerChangeCount++;
+            return _this.triggerChangeCount += 1;
         });
 
         return BM.call(this, attrs, options);
@@ -150,7 +150,7 @@ var index = Backbone.Model.extend({
         //
         // Trigger all relevant attribute changes.
         if (!options.silent) {
-            for (var i = 0, l = relatedResult.changes.length; i < l; i++) {
+            for (var i = 0, l = relatedResult.changes.length; i < l; i += 1) {
                 this.trigger('change:' + relatedResult.changes[i], this, this.get(relatedResult.changes[i]), options);
             }
 
