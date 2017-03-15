@@ -1,3 +1,10 @@
+## 0.3.0
+- Allow model with circular models to be used without infinite recursion.
+- Support `createRelations` option in the `.set` method (defaulting to the
+  value as set in the model constructor). Previously, the option always
+  defaulted to true and caused infinite recursion in the presence of circular
+  model relations.
+
 ## 0.2.2
 - Trigger change event if a relation is changed.
 
